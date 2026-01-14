@@ -16,16 +16,16 @@ import Divider from "@mui/material/Divider";
 import ListSubheader from "@mui/material/ListSubheader";
 
 function Navbar() {
-  const [anclaMenuCursos, setAnclaMenuPlataformas] = React.useState(null);
-  const [anclaMenuPeliculas, setAnclaMenuPeliculas] = React.useState(null);
+  const [anclaMenuPlataformas, setAnclaMenuPlataformas] = React.useState(null);
+  const [anclaMenuCursos, setAnclaMenuCursos] = React.useState(null);
   const [anclaMenuXS, setAnclaMenuXS] = React.useState(null);
 
-  const handleClickMenuDirectores = (event) => {
-    setAnclaMenuDirectores(event.currentTarget);
+  const handleClickMenuPlataformas = (event) => {
+    setAnclaMenuPlataformas(event.currentTarget);
   };
  
-  const handleClickMenuPeliculas = (event) => {
-    setAnclaMenuPeliculas(event.currentTarget);
+  const handleClickMenuCursos = (event) => {
+    setAnclaMenuCursos(event.currentTarget);
   };
 
   const handleClickMenuXS = (event) => {
@@ -33,8 +33,8 @@ function Navbar() {
   };
 
   const handleCloseNavMenu = () => {
-    setAnclaMenuDirectores(null);
-    setAnclaMenuPeliculas(null);
+    setAnclaMenuPlataformas(null);
+    setAnclaMenuCursos(null);
     setAnclaMenuXS(null);
   };
 
@@ -48,7 +48,7 @@ function Navbar() {
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
-              aria-label="menu movies db resolucion xs"
+              aria-label="menu plataformas db resolucion xs"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleClickMenuXS}
@@ -72,18 +72,18 @@ function Navbar() {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: "block", md: "none" } }}
             >
-              <ListSubheader>Menú Directores</ListSubheader>
+              <ListSubheader>Menú Plataformas</ListSubheader>
               <MenuItem onClick={handleCloseNavMenu}>
                 <Link to="/directors/new" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
-                    Alta de directores
+                    Alta de plataformas
                   </Typography>
                 </Link>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
                 <Link to="/directors" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
-                    Listado de directores
+                    Listado de plataformas
                   </Typography>
                 </Link>
               </MenuItem>
@@ -92,14 +92,14 @@ function Navbar() {
               <MenuItem onClick={handleCloseNavMenu}>
                 <Link to="/movies/new" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
-                    Alta de peliculas
+                    Alta de cursos
                   </Typography>
                 </Link>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
                 <Link to="/movies" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
-                    Listado de peliculas
+                    Listado de cursos
                   </Typography>
                 </Link>
               </MenuItem>
@@ -127,16 +127,16 @@ function Navbar() {
 
           {/* Menú para resolución md */}
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {/* Menú para directores en md */}
+            {/* Menú para plataformas en md */}
             <Button
-              onClick={handleClickMenuDirectores}
+              onClick={handleClickMenuPlataformas}
               sx={{ my: 2, color: "white", display: "block" }}
             >
-              Directores
+              Plataformas
             </Button>
             <Menu
-              id="menu-directores"
-              anchorEl={anclaMenuDirectores}
+              id="menu-plataformas"
+              anchorEl={anclaMenuPlataformas}
               anchorOrigin={{
                 vertical: "bottom",
                 horizontal: "left",
@@ -146,35 +146,35 @@ function Navbar() {
                 vertical: "top",
                 horizontal: "left",
               }}
-              open={Boolean(anclaMenuDirectores)}
+              open={Boolean(anclaMenuPlataformas)}
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: "none", md: "flex" } }}
             >
               <MenuItem onClick={handleCloseNavMenu}>
                 <Link to="/directors/new" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
-                    Alta de directores
+                    Alta de plataformas
                   </Typography>
                 </Link>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
                 <Link to="/directors" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
-                    Listado de directores
+                    Listado de plataformas
                   </Typography>
                 </Link>
               </MenuItem>
             </Menu>
-            {/* Menú para peliculas en md */}
+            {/* Menú para cursos en md */}
             <Button
-              onClick={handleClickMenuPeliculas}
+              onClick={handleClickMenuCursos}
               sx={{ my: 2, color: "white", display: "block" }}
             >
-              Peliculas
+              Cursos
             </Button>
             <Menu
-              id="menu-peliculas"
-              anchorEl={anclaMenuPeliculas}
+              id="menu-cursos"
+              anchorEl={anclaMenuCursos}
               anchorOrigin={{
                 vertical: "bottom",
                 horizontal: "left",
@@ -184,21 +184,21 @@ function Navbar() {
                 vertical: "top",
                 horizontal: "left",
               }}
-              open={Boolean(anclaMenuPeliculas)}
+              open={Boolean(anclaMenuCursos)}
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: "none", md: "flex" } }}
             >
               <MenuItem onClick={handleCloseNavMenu}>
                 <Link to="/movies/new" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
-                    Alta de peliculas
+                    Alta de cursos
                   </Typography>
                 </Link>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
                 <Link to="/movies" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
-                    Listado de peliculas
+                    Listado de cursos
                   </Typography>
                 </Link>
               </MenuItem>
