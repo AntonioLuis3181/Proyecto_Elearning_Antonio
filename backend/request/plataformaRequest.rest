@@ -1,0 +1,20 @@
+### GET /api/plataformas recupera todos los directores
+GET http://localhost:3000/api/plataformas
+
+### GET /api/plataformas/:id recupera un plataforma
+GET http://localhost:3000/api/plataformas/1
+
+### GET /api/plataformas/:id recupera un plataforma - NOT FOUND(404)
+GET http://localhost:3000/api/plataformas/50
+
+### POST /api/plataformas/ crea un plataforma 
+POST http://localhost:3000/api/plataformas
+Content-Type: application/json
+
+{
+    "name": "John Ford",
+    "birth_date" : "1880-12-12",
+    "biography" : "Plataforma muy buena para aprender React",
+    "photo_url" : "https://goldenglobes.com/wp-content/uploads/2023/11/01-john-ford.jpg?w=2000"
+}
+
