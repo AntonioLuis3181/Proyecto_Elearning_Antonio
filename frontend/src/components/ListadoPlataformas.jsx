@@ -86,17 +86,15 @@ function ListadoPlataformas() {
           <TableHead>
             <TableRow>
               <TableCell>Nombre</TableCell>
-              <TableCell align="center">Fecha nacimiento</TableCell>
-              <TableCell>Biografía</TableCell>
-              <TableCell>Fotografía</TableCell>
-              <TableCell>Acciones</TableCell>
+              <TableCell>url_web</TableCell>
+              <TableCell>es_gratuita</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {datos.map((row) => (
               <TableRow key={row.id_plataforma}>
-                <TableCell>{row.name}</TableCell>
-                <TableCell align="center">{row.birth_date}</TableCell>
+                <TableCell>{row.nombre}</TableCell>
+                <TableCell align="center">{row.url_web}</TableCell>
                 <TableCell
                   sx={{
                     maxWidth: "500px",
@@ -104,10 +102,10 @@ function ListadoPlataformas() {
                     overflow: "hidden",
                   }}
                 >
-                  {row.biography}
+                  {row.es_gratuita}
                 </TableCell>
                 <TableCell>
-                  <Avatar alt={row.name} src={row.photo_url} />
+                  <Avatar alt={row.nombre} src={row.url_web} />
                 </TableCell>
                 <TableCell>
                   <Button

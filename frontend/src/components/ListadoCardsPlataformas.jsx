@@ -70,15 +70,15 @@ function ListadoCardPlataformas() {
             <Card sx={{ maxWidth: 345, height: '100%' }}>
               <CardMedia
                 sx={{ height: 140 }}
-                image={row.photo_url}
-                title={row.name}
+                image={row.url_web}
+                title={row.nombre}
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
-                  {row.name}
+                  {row.nombre}
                 </Typography>
                 <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                  {row.biography}
+                  {row.es_gratuita}
                 </Typography>
               </CardContent>
               <CardActions>

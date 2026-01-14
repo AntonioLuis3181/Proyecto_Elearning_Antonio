@@ -8,7 +8,7 @@ const sequelize = require("../config/sequelize.js");
 // Cargar las definiciones del modelo en sequelize
 const models = initModels(sequelize);
 // Recuperar el modelo plataforma
-const Plataforma = models.plataforma;
+const Plataforma = models.plataformas;
 
 class PlataformaService {
   async getAllPlataformas() {
@@ -21,9 +21,9 @@ class PlataformaService {
     const result = await Plataforma.findByPk(id_plataforma);
     return result;
   }
-  async createPlataforma(plataforma) {
+  async createPlataforma(plataformas) {
     //Crea un plataforma
-    const result = await Plataforma.create(plataforma);
+    const result = await Plataforma.create(plataformas);
     return result;
   }
   async deletePlataforma(id_plataforma) {
@@ -33,15 +33,15 @@ class PlataformaService {
     });
     return numFilas;
   }
-  async updatePlataforma(plataforma) {
+  async updatePlataforma(plataformas) {
     //Actualizar un plataforma
-    let numFilas = await Plataforma.update(plataforma, {
-      where: { id_plataforma: plataforma.id_plataforma },
+    let numFilas = await Plataforma.update(plataformas, {
+      where: { id_plataforma: plataformas.id_plataforma },
     });
     // Si el numero de filas afectadas por la actualización es cero
     // y existe el registro para ese plataforma, es que no hay cambios en los datos
     // la actualización
-    if(numFilas == 0 && await Plataforma.findByPk(plataforma.id_plataforma)){
+    if(numFilas == 0 && await Plataforma.findByPk(plataformas.id_plataforma)){
       numFilas = 1; // Devuelvo uno para indicar que todo ha ido bien
     }
 

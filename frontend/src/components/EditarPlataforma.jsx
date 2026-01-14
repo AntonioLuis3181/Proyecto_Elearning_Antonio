@@ -12,26 +12,19 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Alert from "@mui/material/Alert";
 
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
-import "dayjs/locale/es";
 import api from "../api";
 
 function EditarPlataforma() {
   const navigate = useNavigate();
   const [plataforma, setPlataforma] = useState({
-    name: "",
-    birth_date: "",
-    biography: "",
-    photo_url: "",
+    nombre: "",
+    url_web: "",
+    es_gratuita: "",
   });
   const [isCamposValidos, setIsCamposValidos] = useState({
-    name: true,
-    birth_date: true,
-    biography: true,
-    photo_url: true,
+    nombre: true,
+    url_web: true,
+    es_gratuita: true,
   });
   const [isUpdating, setIsUpdating] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -77,7 +70,7 @@ function EditarPlataforma() {
   }, [id_plataforma]);
 
   function handleChange(e) {
-    setPlataforma({ ...plataforma, [e.target.name]: e.target.value });
+    setPlataforma({ ...plataforma, [e.target.nombre]: e.target.value });
   }
 
   function handleClick() {
@@ -98,34 +91,27 @@ function EditarPlataforma() {
   function validarDatos() {
     let valido = true;
     let objetoValidacion = {
-      name: true,
-      birth_date: true,
-      biography: true,
-      photo_url: true,
+      nombre: true,
+      url_web: true,
+      es_gratuita: true,
     };
 
     // Validación del nombre
-    if (plataforma.name.length < 10) {
+    if (plataforma.nombre.length < 10) {
       valido = false;
-      objetoValidacion.name = false;
-    }
-
-    // Validación de la biografia
-    if (plataforma.biography.length < 50) {
-      valido = false;
-      objetoValidacion.biography = false;
+      objetoValidacion.nombre = false;
     }
 
     // Validación de la url de la photo
-    if (!isValidURL(plataforma.photo_url)) {
+    if (!isValidURL(plataforma.url_web)) {
       valido = false;
-      objetoValidacion.photo_url = false;
+      objetoValidacion.url_web = false;
     }
 
     // Validación de la fecha como requerida
-    if (!plataforma.birth_date) {
+    if (!plataforma.es_gratuita) {
       valido = false;
-      objetoValidacion.birth_date = false;
+      objetoValidacion.es_gratuita = false;
     }
     // Actualizamos con los campos correctos e incorrectos
     setIsCamposValidos(objetoValidacion);
@@ -185,67 +171,15 @@ function EditarPlataforma() {
                   name="name"
                   type="text"
                   maxLength="100" // Coincide con el tamaño del campo en la BBDD
-                  value={plataforma.name}
+                  value={plataforma.nombre}
                   onChange={handleChange}
-                  error={!isCamposValidos.name}
+                  error={!isCamposValidos.nombre}
                   helperText={
-                    !isCamposValidos.name && "Compruebe el formato del nombre."
+                    !isCamposValidos.nombre && "Compruebe el formato del nombre."
                   }
                 />
               </Grid>
-              <Grid item size={{ xs: 10 }}>
-                <LocalizationProvider
-                  dateAdapter={AdapterDayjs}
-                  adapterLocale="es"
-                >
-                  <DatePicker
-                    label="Fecha de nacimiento"
-                    name="birth_date"
-                    minDate={dayjs("1800-01-01")}
-                    maxDate={dayjs()}
-                    slotProps={{
-                      textField: {
-                        required: true,
-                        error: !isCamposValidos.birth_date,
-                        helperText: !isCamposValidos.birth_date
-                          ? "La fecha es obligatoria"
-                          : "",
-                      },
-                    }}
-                    value={
-                      plataforma.birth_date ? dayjs(plataforma.birth_date) : null
-                    }
-                    onChange={(newValue) =>
-                      setPlataforma({
-                        ...plataforma,
-                        birth_date: newValue.format("YYYY-MM-DD"),
-                      })
-                    }
-                  />
-                </LocalizationProvider>
-              </Grid>
-              <Grid item size={{ xs: 10 }}>
-                <TextField
-                  required
-                  fullWidth
-                  id="biography"
-                  label="Biografía"
-                  name="biography"
-                  type="text"
-                  multiline
-                  maxRows={4}
-                  minRows={2}
-                  maxLength="500" // En este caso no coincide con el tamaño del campo en la BBDD
-                  value={plataforma.biography}
-                  onChange={handleChange}
-                  error={!isCamposValidos.biography}
-                  helperText={
-                    !isCamposValidos.biography &&
-                    "Compruebe el formato de la biografia."
-                  }
-                />
-              </Grid>
-              <Grid item size={{ xs: 10 }}>
+                            <Grid item size={{ xs: 10 }}>
                 <TextField
                   required
                   fullWidth
@@ -263,6 +197,28 @@ function EditarPlataforma() {
                   }
                 />
               </Grid>
+              <Grid item size={{ xs: 10 }}>
+                <TextField
+                  required
+                  fullWidth
+                  id="es_gratuita"
+                  label="es_gratuita"
+                  name="es_gratuita"
+                  type="int"
+                  multiline
+                  maxRows={4}
+                  minRows={2}
+                  maxLength="500" // En este caso no coincide con el tamaño del campo en la BBDD
+                  value={plataforma.es_gratuita}
+                  onChange={handleChange}
+                  error={!isCamposValidos.es_gratuita}
+                  helperText={
+                    !isCamposValidos.es_gratuita &&
+                    "Compruebe si es gratuita."
+                  }
+                />
+              </Grid>
+
               <Grid
                 item
                 size={{ xs: 10 }}
