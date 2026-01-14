@@ -74,30 +74,30 @@ function Navbar() {
             >
               <ListSubheader>Menú Plataformas</ListSubheader>
               <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/directors/new" style={linkStyle}>
+                <Link to="/plataformas/new" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
                     Alta de plataformas
                   </Typography>
                 </Link>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/directors" style={linkStyle}>
+                <Link to="/plataformas" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
                     Listado de plataformas
                   </Typography>
                 </Link>
               </MenuItem>
               <Divider />
-              <ListSubheader>Menú Películas</ListSubheader>
+              <ListSubheader>Menú Cursos</ListSubheader>
               <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/movies/new" style={linkStyle}>
+                <Link to="/cursos/new" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
                     Alta de cursos
                   </Typography>
                 </Link>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/movies" style={linkStyle}>
+                <Link to="/cursos" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
                     Listado de cursos
                   </Typography>
@@ -122,7 +122,7 @@ function Navbar() {
               textDecoration: "none",
             }}
           >
-            MOVIES DB
+            WEB E-LEARNING
           </Typography>
 
           {/* Menú para resolución md */}
@@ -151,14 +151,14 @@ function Navbar() {
               sx={{ display: { xs: "none", md: "flex" } }}
             >
               <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/directors/new" style={linkStyle}>
+                <Link to="/plataformas/new" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
                     Alta de plataformas
                   </Typography>
                 </Link>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/directors" style={linkStyle}>
+                <Link to="/plataformas" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
                     Listado de plataformas
                   </Typography>
@@ -189,14 +189,14 @@ function Navbar() {
               sx={{ display: { xs: "none", md: "flex" } }}
             >
               <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/movies/new" style={linkStyle}>
+                <Link to="/cursos/new" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
                     Alta de cursos
                   </Typography>
                 </Link>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/movies" style={linkStyle}>
+                <Link to="/cursos" style={linkStyle}>
                   <Typography sx={{ textAlign: "center" }}>
                     Listado de cursos
                   </Typography>
