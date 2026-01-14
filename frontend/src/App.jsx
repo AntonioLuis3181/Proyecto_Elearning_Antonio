@@ -29,7 +29,7 @@ const router = createBrowserRouter([
         element: <AltaPlataforma />,
       },
       {
-        path: "/curso/edit/:id_plataforma",
+        path: "/plataformas/edit/:id_plataforma",
         element: <EditarPlataforma />,
       },
       {
