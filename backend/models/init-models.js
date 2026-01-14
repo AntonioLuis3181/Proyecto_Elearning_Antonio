@@ -1,17 +1,17 @@
 var DataTypes = require("sequelize").DataTypes;
-var _plataformas = require("./plataformas");
-var _cursos = require("./cursos");
+var _plataforma = require("./plataforma");
+var _curso = require("./curso");
 
 function initModels(sequelize) {
-  var plataformas = _plataformas(sequelize, DataTypes);
-  var cursos = _cursos(sequelize, DataTypes);
+  var plataforma = _plataforma(sequelize, DataTypes);
+  var curso = _curso(sequelize, DataTypes);
 
-  cursos.belongsTo(plataformas, { as: "id_plataforma_plataforma", foreignKey: "id_plataforma"});
-  plataformas.hasMany(cursos, { as: "cursos", foreignKey: "id_plataforma"});
+  curso.belongsTo(plataforma, { as: "id_plataforma_plataforma", foreignKey: "id_plataforma"});
+  plataforma.hasMany(curso, { as: "cursos", foreignKey: "id_plataforma"});
 
   return {
-    plataformas,
-    cursos,
+    plataforma,
+    curso,
   };
 }
 module.exports = initModels;

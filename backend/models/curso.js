@@ -7,7 +7,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    title: {
+    titulo: {
       type: DataTypes.STRING(150),
       allowNull: false
     },
@@ -22,6 +22,10 @@ module.exports = function(sequelize, DataTypes) {
     fecha_publicacion:{
         type: DataTypes.DATEONLY,
         allowNull: true
+    },
+    imagen_url: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     },
     id_plataformas: {
       type: DataTypes.INTEGER,
