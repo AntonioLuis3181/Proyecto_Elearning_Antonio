@@ -13,15 +13,13 @@ import MovieTwoToneIcon from "@mui/icons-material/MovieTwoTone";
 import { Link } from "react-router";
 import Divider from "@mui/material/Divider";
 import ListSubheader from "@mui/material/ListSubheader";
-import useUserStore from "../stores/useUserStore";
-
 
 function Navbar() {
   const [anclaMenuPlataformas, setAnclaMenuPlataformas] = React.useState(null);
   const [anclaMenuCursos, setAnclaMenuCursos] = React.useState(null);
   const [anclaMenuXS, setAnclaMenuXS] = React.useState(null);
-  const { user, clearUser, isAdmin, isUser, isLoggedIn } = useUserStore();
 
+  
   const handleClickMenuPlataformas = (event) => {
     setAnclaMenuPlataformas(event.currentTarget);
   };
@@ -41,26 +39,6 @@ function Navbar() {
   };
 
   const linkStyle = { color: "black", textDecoration: "none" };
-
-    const logout = async () => {
-    try {
-      const response = await fetch(apiUrl + "/users/logout", {
-        method: "POST",
-        credentials: "include", // Necesario para enviar cookies
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        alert(data.mensaje);
-        // Limpiar el estado global de autenticación (si usas Zustand, Context, etc.)
-        clearUser();
-        // Redireccionar al usuario
-        navigate("/");
-      }
-    } catch (error) {
-      console.error("Error en logout", error);
-    }
-  };
 
   return (
     <AppBar position="static">
@@ -225,21 +203,6 @@ function Navbar() {
                 </Link>
               </MenuItem>
             </Menu>
-            { !isLoggedIn() ? "No logueado" : "Log"}
-            <>
-              <Link to="/signup">
-                <MDBBtn size="sm" className="me-2">
-                  SignUp
-                </MDBBtn>
-              </Link>
-              <Link to="/login">
-                <MDBBtn size="sm">Login</MDBBtn>
-              </Link>
-              { <span className="mx-2">Hola, {user.username}</span>
-                  <MDBBtn size="sm" color="danger" onClick={logout}>
-                    Logout
-                  </MDBBtn> }
-            </>
           </Box>
         </Toolbar>
       </Container>
