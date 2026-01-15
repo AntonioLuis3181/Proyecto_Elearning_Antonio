@@ -1,11 +1,10 @@
 const initModels = require("../models/init-models.js").initModels;
 // Crear la instancia de sequelize con la conexión a la base de datos
 const sequelize = require("../config/sequelize.js");
-const plataforma = require("../models/plataforma");
 // Cargar las definiciones del modelo en sequelize
 const models = initModels(sequelize);
-const Curso = initModels.curso
-const Plataforma = initModels.plataforma
+const Curso = models.curso
+const Plataforma = models.plataforma
 
 class CursoService {
     async getAllCursos() {
