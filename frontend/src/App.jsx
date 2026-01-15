@@ -6,6 +6,10 @@ import ListadoPlataformas from "./components/ListadoPlataformas";
 import ListadoCardsPlataformas from "./components/ListadoCardsPlataformas";
 import AltaPlataforma from "./components/AltaPlataforma";
 import EditarPlataforma from "./components/EditarPlataforma";
+import AltaCurso from "./components/AltaCursos";
+import ListadoCursos from "./components/ListadoCursos";
+import ListadoCardCursos from "./components/ListadoCardsCursos";
+import EditarCurso from "./components/EditarCurso";
 
 import Home from "./pages/Home";
 
@@ -20,7 +24,7 @@ const router = createBrowserRouter([
         path: "/plataformas",
         element: <ListadoPlataformas/>,
       },
-            {
+      {
         path: "/plataformas/cards",
         element: <ListadoCardsPlataformas/>,
       },
@@ -34,12 +38,20 @@ const router = createBrowserRouter([
       },
       {
         path: "/cursos",
-        element: <h1>Listado de cursos</h1>,
+        element: <ListadoCursos/>
+      },
+      {
+        path: "/cursos/cards",
+        element: <ListadoCardCursos/>
       },
       {
         path: "/cursos/new",
-        element: <h1>Alta de cursos</h1>,
+        element: <AltaCurso/>,
       },
+      {
+        path: "/cursos/edi/:id_curso",
+        element: <EditarCurso/>
+      }
     ],
   },
 ]);

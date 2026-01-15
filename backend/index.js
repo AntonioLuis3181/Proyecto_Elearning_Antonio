@@ -8,6 +8,7 @@ const { logMensaje } = require("./utils/logger.js");
 
 // Rutas de la API
 const plataformaRoutes = require("./routes/plataformaRoutes");
+const cursoRoutes = require("./routes/cursoRoutes");
 
 // ============================================
 // INICIALIZACIÓN
@@ -34,6 +35,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // RUTAS - API REST
 // ============================================
 app.use("/api/plataformas", plataformaRoutes);
+app.use("/api/cursos",cursoRoutes);
 
 // ============================================
 // RUTAS - SPA (Catch-all)

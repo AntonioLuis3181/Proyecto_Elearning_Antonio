@@ -9,14 +9,15 @@ import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 import api from "../api";
 
-function ListadoCardPlataformas() {
+function ListadoCardCursos() {
   const [datos, setDatos] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchPlataformas() {
+    async function fetchCursos() {
       try {
-        const respuesta = await api.get("/plataformas/");
+        const respuesta = await api.get("/cursos/");
+        console.log("LO QUE LLEGA DE LA API:", respuesta)
         setDatos(respuesta.datos);
         setError(null);
       } catch (error) {
@@ -25,14 +26,14 @@ function ListadoCardPlataformas() {
       }
     }
 
-    fetchPlataformas();
+    fetchCursos();
   }, []);
 
-  async function handleDelete(id_plataforma) {
+  async function handleDelete(id_curso) {
     try {
-      await api.delete("/plataformas/" + id_plataforma);
+      await api.delete("/cursos/" + id_curso);
       const datos_nuevos = datos.filter(
-        (plataforma) => plataforma.id_plataforma !== id_plataforma
+        (curso) => curso.id_curso !== id_curso
       );
       setDatos(datos_nuevos);
       setError(null);
@@ -54,7 +55,7 @@ function ListadoCardPlataformas() {
   if (!datos || datos.length === 0) {
     return (
       <Typography variant="h5" align="center" sx={{ mt: 3 }}>
-        No hay plataformas disponibles
+        No hay cursos disponibles
       </Typography>
     );
   }
@@ -62,40 +63,45 @@ function ListadoCardPlataformas() {
   return (
     <>
       <Typography variant="h4" align="center" sx={{ my: 3 }}>
-        Listado de plataformas
+        Listado de cursos
       </Typography>
       
       <Grid container spacing={3}>
         {datos.map((row) => (
-          <Grid item xs={12} sm={6} md={4} key={row.id_plataforma}>
+          <Grid item xs={12} sm={6} md={4} key={row.id_curso}>
             <Card sx={{ maxWidth: 345, height: '100%' }}>
               <CardMedia
                 sx={{ height: 140 }}
-                image={row.url_web}
-                title={row.nombre}
+                image={row.imagen_url}
+                title={row.titulo}
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
-                  {row.nombre}
+                  {row.titulo}
                 </Typography>
                 <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                  {row.es_gratuita}
+                  {row.precio}
+                </Typography>
+                <Typography variant="bovy2" sx={{color: "text.secondary"}}>
+                    Plataforma: {row.plataforma?.nombre || "Sin plataforma"}
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button size="small">Compartir</Button>
-                <Button size="small">Ver más</Button>
+                <Button 
+                size="small" 
+                component={Link} 
+                to={`/cursos/edit/${row.id_curso}`}//
+                >
+                Editar
+                </Button>
                 <Button 
                   size="small" 
                   color="error"
-                  onClick={() => handleDelete(row.id_plataforma)}
+                  onClick={() => handleDelete(row.id_curso)}
                 >
                   Eliminar
                 </Button>
               </CardActions>
-              <Link to={'/plataformas/edit/$row.plataforma'}>
-                
-              </Link>
             </Card>
           </Grid>
         ))}
@@ -104,4 +110,4 @@ function ListadoCardPlataformas() {
   );
 }
 
-export default ListadoCardPlataformas;
+export default ListadoCardCursos;

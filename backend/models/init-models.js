@@ -6,7 +6,7 @@ function initModels(sequelize) {
   var plataforma = _plataforma(sequelize, DataTypes);
   var curso = _curso(sequelize, DataTypes);
 
-  curso.belongsTo(plataforma, { as: "id_plataforma_plataforma", foreignKey: "id_plataforma"});
+  curso.belongsTo(plataforma, { as: "plataforma", foreignKey: "id_plataforma"});
   plataforma.hasMany(curso, { as: "cursos", foreignKey: "id_plataforma"});
 
   return {
