@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid"; 
+import Grid from "@mui/material/Grid"; // <--- OJO: Importamos Grid2 para la versión nueva
 import Paper from "@mui/material/Paper";
-import MenuItem from "@mui/material/MenuItem"; 
-import Select from "@mui/material/Select";     
-import InputLabel from "@mui/material/InputLabel"; 
-import FormControl from "@mui/material/FormControl"; 
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
 
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -25,25 +25,22 @@ function AltaCurso() {
     titulo: "",
     precio: "",
     horas: "",
-    fecha_publicacion: new Date().toISOString().split('T')[0], 
+    fecha_publicacion: new Date().toISOString().split('T')[0],
     imagen_url: "",
-    id_plataforma: "" 
+    id_plataforma: ""
   });
 
-
   const [listaPlataformas, setListaPlataformas] = useState([]);
-
   const [isUpdating, setIsUpdating] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
   const [dialogSeverity, setDialogSeverity] = useState("success");
 
-
+  // 1. Cargar Plataformas
   useEffect(() => {
     async function fetchPlataformas() {
       try {
         const respuesta = await api.get("/plataformas");
-        
         if(respuesta.datos) {
             setListaPlataformas(respuesta.datos);
         }
@@ -54,16 +51,16 @@ function AltaCurso() {
     fetchPlataformas();
   }, []);
 
+  // 2. Guardar Curso
   useEffect(() => {
     async function fetchCreateCurso() {
       try {
-        // Hacemos el POST a /cursos
         const respuesta = await api.post("/cursos/", curso);
-        
         setDialogMessage(respuesta.mensaje || "Curso creado correctamente");
         setDialogSeverity("success");
         setOpenDialog(true);
       } catch (error) {
+        console.error("Error en servidor:", error);
         setDialogMessage(error.mensaje || "Error al crear el curso");
         setDialogSeverity("error");
         setOpenDialog(true);
@@ -72,17 +69,37 @@ function AltaCurso() {
     }
 
     if (isUpdating) fetchCreateCurso();
-  }, [isUpdating,]);
+  }, [isUpdating, curso]);
 
   function handleChange(e) {
-    setCurso({ ...curso, [e.target.name]: e.target.value });
+    let { name, value } = e.target;
+
+    // Validación para que no bajen de 0
+    if (name === "precio" || name === "horas") {
+      if (value < 0) value = 0;
+    }
+
+    setCurso({ ...curso, [name]: value });
   }
 
   function handleClick() {
+    // --- EL CHIVATO: MIRA LA CONSOLA AL PULSAR ---
+    console.log("BOTÓN PULSADO. Datos a enviar:", curso);
+    
     if (isUpdating) return;
-    if (validarDatos()) {
-      setIsUpdating(true);
+    
+    // Validaciones básicas
+    if (!curso.titulo || curso.titulo.length < 3) {
+       alert("El título es muy corto");
+       return;
     }
+    if (!curso.id_plataforma) {
+        alert("Debes seleccionar una plataforma");
+        return;
+    }
+
+    // Si todo ok, activamos el flag para que el useEffect envíe
+    setIsUpdating(true);
   }
 
   function handleDialogClose() {
@@ -90,36 +107,20 @@ function AltaCurso() {
     if (dialogSeverity === "success") navigate("/cursos");
   }
 
-  function validarDatos() {
-
-    if (!curso.titulo || curso.titulo.length < 3) {
-       alert("El título es muy corto"); 
-       return false;
-    }
-    if (!curso.id_plataforma) {
-        alert("Debes seleccionar una plataforma");
-        return false;
-    }
-
-    if(curso.precio < 0.00) {
-        alert("El precio no puede ser negativo")
-    }
-    return false;
-  }
-
   return (
     <>
-      <Grid container spacing={2} sx={{ justifyContent: "center", alignItems: "center" }}>
-        <Grid item xs={12} sm={9} md={7}>
-          <Paper elevation={6} sx={{ mt: 3, p: 3, maxWidth: 900, mx: "auto" }}>
+      {/* Usamos Grid container con espaciado */}
+      <Grid container spacing={2} sx={{ justifyContent: "center", alignItems: "center", mt: 3 }}>
+        <Grid size={{ xs: 12, sm: 9, md: 7 }}> {/* CAMBIO V6: size={{...}} en vez de xs={} */}
+          <Paper elevation={6} sx={{ p: 3, maxWidth: 900, mx: "auto" }}>
             <Typography variant="h4" align="center" sx={{ mb: 3 }}>
               Alta de Curso
             </Typography>
 
             <Grid container spacing={2}>
               
-              {/* CAMPO: TÍTULO */}
-              <Grid item xs={12}>
+              {/* TÍTULO */}
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   required
                   fullWidth
@@ -130,46 +131,47 @@ function AltaCurso() {
                 />
               </Grid>
 
-              {/* CAMPO: PRECIO */}
-              <Grid item xs={12} sm={6}>
+              {/* PRECIO */}
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
                   label="Precio (€)"
                   name="precio"
                   type="number"
-                  InputProps={{ inputProps: {min: 0} }}
+                  InputProps={{ inputProps: { min: 0 } }}
                   value={curso.precio}
                   onChange={handleChange}
                 />
               </Grid>
 
-              {/* CAMPO: HORAS */}
-              <Grid item xs={12} sm={6}>
+              {/* HORAS */}
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
                   label="Horas"
                   name="horas"
                   type="number"
-                  InputProps={{ inputProps: {min: 0} }}
+                  InputProps={{ inputProps: { min: 0 } }}
                   value={curso.horas}
                   onChange={handleChange}
                 />
               </Grid>
 
-              {/* CAMPO: FECHA PUBLICACIÓN */}
-              <Grid item xs={12} sm={6}>
+              {/* FECHA */}
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
                   label="Fecha Publicación"
                   name="fecha_publicacion"
                   type="date"
+                  InputLabelProps={{ shrink: true }}
                   value={curso.fecha_publicacion}
                   onChange={handleChange}
                 />
               </Grid>
 
-              {/* CAMPO: URL IMAGEN */}
-              <Grid item xs={12} sm={6}>
+              {/* URL IMAGEN */}
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
                   label="URL Imagen (Logo)"
@@ -179,8 +181,8 @@ function AltaCurso() {
                 />
               </Grid>
 
-              {/* CAMPO: SELECT DE PLATAFORMA */}
-              <Grid item xs={12}>
+              {/* SELECT PLATAFORMA */}
+              <Grid size={{ xs: 12 }}>
                 <FormControl fullWidth required>
                   <InputLabel id="plataforma-label">Plataforma</InputLabel>
                   <Select
@@ -190,7 +192,6 @@ function AltaCurso() {
                     label="Plataforma"
                     onChange={handleChange}
                   >
-                    {/* Aquí iteramos las plataformas que cargamos de la API */}
                     {listaPlataformas.map((p) => (
                         <MenuItem key={p.id_plataforma} value={p.id_plataforma}>
                             {p.nombre}
@@ -200,8 +201,8 @@ function AltaCurso() {
                 </FormControl>
               </Grid>
 
-              {/* BOTÓN ACEPTAR */}
-              <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end" }}>
+              {/* BOTÓN */}
+              <Grid size={{ xs: 12 }} sx={{ display: "flex", justifyContent: "flex-end" }}>
                 <Button
                   variant="contained"
                   sx={{ mt: 3 }}
@@ -217,7 +218,6 @@ function AltaCurso() {
         </Grid>
       </Grid>
 
-      {/* DIÁLOGO DE CONFIRMACIÓN */}
       <Dialog open={openDialog} onClose={handleDialogClose}>
         <DialogTitle>{dialogSeverity === "success" ? "¡Éxito!" : "Error"}</DialogTitle>
         <DialogContent dividers>

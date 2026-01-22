@@ -18,6 +18,11 @@ module.exports = function(sequelize, DataTypes) {
     es_gratuita:{
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    fecha_alta: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: Sequelize.literal("CURRENT_TIMESTAM")
     }
   }, {
     sequelize,

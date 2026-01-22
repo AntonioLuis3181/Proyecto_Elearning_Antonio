@@ -3,16 +3,19 @@ const { logMensaje } = require("../utils/logger.js");
 const cursoService = require("../services/cursoService");
 
 class CursoController {
-  async getAllCursos(req, res) {
+async getAllCursos(req, res) {
     try {
-      const cursos = await cursoService.getAllCursos();
+      const { busqueda, fechaInicio, fechaFin } = req.query; 
+
+      const cursos = await cursoService.getAllCursos(busqueda, fechaInicio, fechaFin);
+      
       return res.status(200).json({
         ok: true,
         datos: cursos,
         mensaje: "Cursos recuperados correctamente",
       });
     } catch (err) {
-      logMensaje("Error en getAllCurso:", err);
+      console.error("Error en getAllCurso:", err);
       return res.status(500).json({
         ok: false,
         datos: null,
@@ -53,11 +56,14 @@ class CursoController {
           mensaje: "Curso no encontrado: " + id_curso,
         });
       } else {
-        // Borrado correcto
-        return res.status(204).send();
+        return res.status(200).json({
+          ok:true,
+          datos:null,
+          mensaje:"Curso borrado correctamente",
+        });
       }
     } catch (err) {
-      logMensaje("Error en deleteCurso:", err);
+      console.error("Error en deleteCurso:", err);
       return res.status(500).json({
         ok: false,
         datos: null,
@@ -72,22 +78,26 @@ class CursoController {
     // El objeto del curso llega en el body
     const curso = req.body;
 
+    curso.id_curso = id_curso;
+
     try {
       const numFilas = await cursoService.updateCurso(curso);
 
       if (numFilas == 0) {
-        // No se ha encontrado lo que se quería actualizar o no hay nada que cambiar
         return res.status(404).json({
           ok: false,
           datos: null,
           mensaje: "No encontrado: " + curso.id_curso,
         });
       } else {
-        // Al dar status 204 no se devuelva nada
-        res.status(204).send();
+        return res.status(200).json({
+          ok: true,
+          datos: null,
+          mensaje: "Curso actualizado correctamente",
+        });
       }
     } catch (err) {
-      logMensaje("Error en EditCurso:", err);
+      console.error("Error en EditCurso:", err);
       return res.status(500).json({
         ok: false,
         datos: null,

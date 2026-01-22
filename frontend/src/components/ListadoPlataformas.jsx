@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -6,126 +9,155 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Avatar from "@mui/material/Avatar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid";
+import SearchIcon from '@mui/icons-material/Search';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
+
 import api from "../api";
-import { useNavigate } from "react-router-dom";
 
 function ListadoPlataformas() {
   const [datos, setDatos] = useState([]);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  
+  const [busqueda, setBusqueda] = useState("");
+  const [fechaInicio, setFechaInicio] = useState("");
+  const [fechaFin, setFechaFin] = useState("");
+
+  const getPlataformasFromApi = async () => {
+    try {
+      let queryParams = new URLSearchParams();
+      if (busqueda) queryParams.append("busqueda", busqueda);
+      if (fechaInicio) queryParams.append("fechaInicio", fechaInicio);
+      if (fechaFin) queryParams.append("fechaFin", fechaFin);
+
+      const url = `/plataformas?${queryParams.toString()}`;
+      
+      const respuesta = await api.get(url);
+      return respuesta.datos || [];
+    } catch (error) {
+      console.error("Error cargando plataformas:", error);
+      return [];
+    }
+  };
 
   useEffect(() => {
-    async function fetchPlataformas() {
-      try {
-        const respuesta = await api.get("/plataformas/");
-
-        // Actualizamos los datos de plataformas
-        setDatos(respuesta.datos);
-
-        // Y no tenemos errores
-        setError(null);
-      } catch (error) {
-        setError(error.mensaje || "No se pudo conectar al servidor");
-        setDatos([]);
-      }
-    }
-
-    fetchPlataformas();
+    const cargaInicial = async () => {
+        const resultados = await getPlataformasFromApi();
+        setDatos(resultados);
+    };
+    cargaInicial();
   }, []);
 
-  async function handleDelete(id_plataforma) {
-    try {
-      await api.delete("/plataformas/" + id_plataforma);
+  const handleSearch = async () => {
+    const resultados = await getPlataformasFromApi();
+    setDatos(resultados);
+  };
 
-      const datos_nuevos = datos.filter( plataforma => plataforma.id_plataforma != id_plataforma);
-
-      // Actualizamos los datos de plataformas sin el que hemos borrado
-      setDatos(datos_nuevos);
-
-      // Y no tenemos errores
-      setError(null);
-    } catch (error) {
-      setError(error.mensaje || "No se pudo conectar al servidor");
-      setDatos([]);
+  async function handleDelete(id) {
+    if (window.confirm("¿Seguro que quieres borrar esta plataforma?")) {
+      try {
+        await api.delete("/plataformas/" + id);
+        setDatos((prev) => prev.filter((p) => p.id_plataforma !== id));
+      } catch (error) {
+        console.error("Error al borrar", error);
+        alert("No se puede borrar: Probablemente tenga cursos asociados.");
+      }
     }
-  }
-
-  if (error != null) {
-    return (
-      <>
-        <Typography variant="h5" align="center" sx={{ mt: 3 }}>
-          {error}
-        </Typography>
-      </>
-    );
-  }
-
-  if (!datos || datos.length === 0) {
-    return (
-      <>
-        <Typography variant="h5" align="center" sx={{ mt: 3 }}>
-          No hay plataformas disponibles
-        </Typography>
-      </>
-    );
   }
 
   return (
     <>
-      <Typography variant="h4" align="center" sx={{ my: 3 }}>
-        Listado de plataformas
+      <Typography variant="h4" align="center" sx={{ mt: 3, mb: 3 }}>
+        Listado de Plataformas
       </Typography>
 
-      <TableContainer component={Paper}>
-        <Table stickyHeader ria-label="simple table">
+      <Grid container spacing={2} sx={{ justifyContent: "center", mb: 3, alignItems: "center" }}>
+        
+        <Grid item>
+            <TextField 
+                label="Nombre..." 
+                variant="outlined" 
+                size="small"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+            />
+        </Grid>
+
+        <Grid item>
+             <TextField
+                label="Desde"
+                type="date"
+                size="small"
+                InputLabelProps={{ shrink: true }}
+                value={fechaInicio}
+                onChange={(e) => setFechaInicio(e.target.value)}
+            />
+        </Grid>
+
+        <Grid item>
+             <TextField
+                label="Hasta"
+                type="date"
+                size="small"
+                InputLabelProps={{ shrink: true }}
+                value={fechaFin}
+                onChange={(e) => setFechaFin(e.target.value)}
+            />
+        </Grid>
+
+        <Grid item>
+            <Button 
+                variant="contained" 
+                startIcon={<SearchIcon />} 
+                onClick={handleSearch}
+            >
+                Buscar
+            </Button>
+        </Grid>
+      </Grid>
+
+      <TableContainer component={Paper} sx={{ mx: 2, width: 'auto', mb: 5 }}>
+        <Table sx={{ minWidth: 650 }}>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
               <TableCell>Nombre</TableCell>
-              <TableCell>url_web</TableCell>
-              <TableCell>es_gratuita</TableCell>
+              <TableCell>Web</TableCell>
+              <TableCell>¿Gratis?</TableCell>
+              <TableCell>Fecha Alta</TableCell>
+              <TableCell align="center">Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {datos.map((row) => (
-              <TableRow key={row.id_plataforma}>
-                <TableCell>{row.nombre}</TableCell>
-                <TableCell align="center">{row.url_web}</TableCell>
-                <TableCell
-                  sx={{
-                    maxWidth: "500px",
-                    textWrap: "wrap",
-                    overflow: "hidden",
-                  }}
-                >
-                  {row.es_gratuita}
-                </TableCell>
-                <TableCell>
-                  <Avatar alt={row.nombre} src={row.url_web} />
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => handleDelete(row.id_plataforma)}
-                  >
-                    <DeleteIcon />
-                  </Button>
-                  <Button
-                    sx={{ml: 1}}
-                    variant="contained"
-                    color="primary"
-                    onClick={() => navigate('/plataformas/edit/' + row.id_plataforma)}
-                  >
-                    <EditIcon />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {datos.length === 0 ? (
+                <TableRow><TableCell colSpan={5} align="center">No hay datos</TableCell></TableRow>
+            ) : (
+                datos.map((row) => (
+                <TableRow key={row.id_plataforma}>
+                    <TableCell sx={{ fontWeight: 'bold' }}>{row.nombre}</TableCell>
+                    
+                    <TableCell>
+                        {row.url_web && <a href={row.url_web} target="_blank" rel="noopener noreferrer">Visitar</a>}
+                    </TableCell>
+
+                    <TableCell>{row.es_gratuita ? "Sí" : "No"}</TableCell>
+                    
+                    <TableCell>
+                        {row.fecha_alta ? new Date(row.fecha_alta).toLocaleDateString() : '-'}
+                    </TableCell>
+
+                    <TableCell align="center">
+                    <IconButton component={Link} to={`/plataformas/edit/${row.id_plataforma}`} color="primary">
+                        <EditIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handleDelete(row.id_plataforma)} color="error">
+                        <DeleteIcon />
+                    </IconButton>
+                    </TableCell>
+                </TableRow>
+                ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>

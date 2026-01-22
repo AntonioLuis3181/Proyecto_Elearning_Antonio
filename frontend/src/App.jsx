@@ -10,6 +10,7 @@ import AltaCurso from "./components/AltaCursos";
 import ListadoCursos from "./components/ListadoCursos";
 import ListadoCardCursos from "./components/ListadoCardsCursos";
 import EditarCurso from "./components/EditarCurso";
+import ListadoCursosDataGrid from "./components/ListadoCursosDataGrid";
 
 import Home from "./pages/Home";
 
@@ -33,7 +34,7 @@ const router = createBrowserRouter([
         element: <AltaPlataforma />,
       },
       {
-        path: "/plataformas/edit/:id_plataforma",
+        path: "/plataformas/edit/:id",
         element: <EditarPlataforma />,
       },
       {
@@ -49,8 +50,12 @@ const router = createBrowserRouter([
         element: <AltaCurso/>,
       },
       {
-        path: "/cursos/edi/:id_curso",
+        path: "/cursos/edit/:id",
         element: <EditarCurso/>
+      },
+      {
+        path: "/cursos/datagrid",
+        element: <ListadoCursosDataGrid/>
       }
     ],
   },

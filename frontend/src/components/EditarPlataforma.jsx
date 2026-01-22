@@ -3,9 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Grid"; 
 import Paper from "@mui/material/Paper";
-
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -16,222 +17,163 @@ import api from "../api";
 
 function EditarPlataforma() {
   const navigate = useNavigate();
+  const { id } = useParams(); 
+
   const [plataforma, setPlataforma] = useState({
     nombre: "",
     url_web: "",
-    es_gratuita: "",
+    es_gratuita: false, 
+    fecha_alta: ""
   });
-  const [isCamposValidos, setIsCamposValidos] = useState({
-    nombre: true,
-    url_web: true,
-    es_gratuita: true,
-  });
+
   const [isUpdating, setIsUpdating] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
   const [dialogSeverity, setDialogSeverity] = useState("success");
-  const { id_plataforma } = useParams();
-
-  useEffect(() => {
-    async function fetchUpdatePlataforma() {
-      try {
-        await api.put(`/plataformas/${id_plataforma}`, plataforma);
-        
-        setDialogMessage("Actualización correcta del plataforma"); // Mensaje
-        setDialogSeverity("success"); // Color verde
-        setOpenDialog(true); // Abrir el diálogo
-      } catch (error) {
-        setDialogMessage(error.mensaje || "Error al actualizar el plataforma");
-        setDialogSeverity("error"); // Color rojo
-        setOpenDialog(true); // Abrir el diálogo
-      }
-      // Pase lo que pase hemos terminado el proceso de actualización
-      setIsUpdating(false);
-    }
-
-    if (isUpdating) fetchUpdatePlataforma();
-  }, [isUpdating]);
 
   useEffect(() => {
     async function fetchPlataforma() {
       try {
-        const respuesta = await api.get(`/plataformas/${id_plataforma}`);
+        const respuesta = await api.get(`/plataformas/${id}`);
+        const data = respuesta.datos;
 
-        setPlataforma(respuesta.datos);
+        let fechaFormateada = "";
+        if (data.fecha_alta) {
+          fechaFormateada = new Date(data.fecha_alta).toISOString().split('T')[0];
+        }
 
+        setPlataforma({
+            nombre: data.nombre,
+            url_web: data.url_web,
+            es_gratuita: Boolean(data.es_gratuita), 
+            fecha_alta: fechaFormateada
+        });
       } catch (error) {
-        setDialogMessage(error.mensaje || "Error al recuperar los datos del plataforma");
-        setDialogSeverity("error"); // Color rojo
-        setOpenDialog(true); // Abrir el diálogo
+        console.error("Detalles del error:", error); 
+        setDialogMessage("Error al cargar los datos");
+        setDialogSeverity("error");
+        setOpenDialog(true);
       }
     }
 
-    fetchPlataforma();
-  }, [id_plataforma]);
+    if (id) fetchPlataforma();
+  }, [id]);
+
 
   function handleChange(e) {
-    setPlataforma({ ...plataforma, [e.target.nombre]: e.target.value });
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    const name = e.target.name;
+
+    setPlataforma({ ...plataforma, [name]: value });
   }
 
-  function handleClick() {
-    // evitar envíos duplicados por pulsar el botón tras el mensaje de inserción correcta
+  async function handleClick() {
     if (isUpdating) return;
 
-    if (validarDatos()) {
-      setIsUpdating(true);
+    if (!plataforma.nombre) {
+        setDialogMessage("El nombre es obligatorio");
+        setDialogSeverity("warning");
+        setOpenDialog(true);
+        return;
+    }
+
+    setIsUpdating(true);
+    
+    try {
+        const datosAEnviar = { ...plataforma, id_plataforma: id };
+        
+        await api.put(`/plataformas/${id}`, datosAEnviar);
+        
+        setDialogMessage("Plataforma actualizada correctamente");
+        setDialogSeverity("success");
+        setOpenDialog(true);
+        
+    } catch (error) {
+        setDialogMessage(error.mensaje || "Error al actualizar");
+        setDialogSeverity("error");
+        setOpenDialog(true);
+    } finally {
+        setIsUpdating(false);
     }
   }
 
   function handleDialogClose() {
     setOpenDialog(false);
-
-    if (dialogSeverity === "success") navigate("/");
+    if (dialogSeverity === "success") navigate("/plataformas");
   }
-
-  function validarDatos() {
-    let valido = true;
-    let objetoValidacion = {
-      nombre: true,
-      url_web: true,
-      es_gratuita: true,
-    };
-
-    // Validación del nombre
-    if (plataforma.nombre.length < 10) {
-      valido = false;
-      objetoValidacion.nombre = false;
-    }
-
-    // Validación de la url de la photo
-    if (!isValidURL(plataforma.url_web)) {
-      valido = false;
-      objetoValidacion.url_web = false;
-    }
-
-    // Validación de la fecha como requerida
-    if (!plataforma.es_gratuita) {
-      valido = false;
-      objetoValidacion.es_gratuita = false;
-    }
-    // Actualizamos con los campos correctos e incorrectos
-    setIsCamposValidos(objetoValidacion);
-
-    return valido;
-  }
-
-  const isValidURL = (urlString) => {
-    var patronURL = new RegExp(
-      // valida protocolo
-      "^(https?:\\/\\/)?" +
-        // valida nombre de dominio
-        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
-        // valida OR direccion ip (v4)
-        "((\\d{1,3}\\.){3}\\d{1,3}))" +
-        // valida puerto y path
-        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
-        // valida queries
-        "(\\?[;&a-z\\d%_.~+=-]*)?" +
-        // valida fragment locator
-        "(\\#[-a-z\\d_]*)?$",
-      "i"
-    );
-    return !!patronURL.test(urlString);
-  };
 
   return (
     <>
-      <Grid
-        container
-        spacing={2}
-        sx={{
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Grid item size={{ xs: 12, sm: 9, md: 7 }}>
-          <Paper elevation={6} sx={{ mt: 3, p: 3, maxWidth: 900, mx: "auto" }}>
+      <Grid container spacing={2} sx={{ justifyContent: "center", mt: 3 }}>
+        <Grid size={{ xs: 12, sm: 8, md: 6 }}>
+          <Paper elevation={6} sx={{ p: 3, maxWidth: 800, mx: "auto" }}>
             <Typography variant="h4" align="center" sx={{ mb: 3 }}>
-              Editar plataforma
+              Editar Plataforma #{id}
             </Typography>
 
-            <Grid
-              container
-              spacing={2}
-              sx={{
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Grid item size={{ xs: 10 }}>
+            <Grid container spacing={2}>
+              
+              <Grid size={{ xs: 12 }}>
                 <TextField
-                  required
                   fullWidth
-                  id="name"
+                  required
                   label="Nombre"
-                  name="name"
-                  type="text"
-                  maxLength="100" // Coincide con el tamaño del campo en la BBDD
+                  name="nombre" 
                   value={plataforma.nombre}
                   onChange={handleChange}
-                  error={!isCamposValidos.nombre}
-                  helperText={
-                    !isCamposValidos.nombre && "Compruebe el formato del nombre."
-                  }
-                />
-              </Grid>
-                            <Grid item size={{ xs: 10 }}>
-                <TextField
-                  required
-                  fullWidth
-                  id="photo_url"
-                  label="URL de la fotografía"
-                  name="photo_url"
-                  type="text"
-                  maxLength="255" // Coincide con el tamaño del campo en la BBDD
-                  value={plataforma.photo_url}
-                  onChange={handleChange}
-                  error={!isCamposValidos.photo_url}
-                  helperText={
-                    !isCamposValidos.photo_url &&
-                    "Compruebe el formato de la URL de la fotografía."
-                  }
-                />
-              </Grid>
-              <Grid item size={{ xs: 10 }}>
-                <TextField
-                  required
-                  fullWidth
-                  id="es_gratuita"
-                  label="es_gratuita"
-                  name="es_gratuita"
-                  type="int"
-                  multiline
-                  maxRows={4}
-                  minRows={2}
-                  maxLength="500" // En este caso no coincide con el tamaño del campo en la BBDD
-                  value={plataforma.es_gratuita}
-                  onChange={handleChange}
-                  error={!isCamposValidos.es_gratuita}
-                  helperText={
-                    !isCamposValidos.es_gratuita &&
-                    "Compruebe si es gratuita."
-                  }
                 />
               </Grid>
 
-              <Grid
-                item
-                size={{ xs: 10 }}
-                sx={{ display: "flex", justifyContent: "flex-end" }}
-              >
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  fullWidth
+                  label="URL Sitio Web"
+                  name="url_web" 
+                  value={plataforma.url_web}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid size={{ xs: 12, sm: 6 }}>
+                 <TextField
+                  fullWidth
+                  type="date"
+                  label="Fecha de Alta"
+                  name="fecha_alta"
+                  InputLabelProps={{ shrink: true }}
+                  value={plataforma.fecha_alta}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid size={{ xs: 12, sm: 6 }} sx={{ display: 'flex', alignItems: 'center' }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={plataforma.es_gratuita}
+                      onChange={handleChange}
+                      name="es_gratuita"
+                      color="primary"
+                    />
+                  }
+                  label="¿Es Gratuita?"
+                />
+              </Grid>
+
+              <Grid size={{ xs: 12 }} sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+                <Button 
+                    variant="outlined" 
+                    sx={{ mr: 2 }}
+                    onClick={() => navigate("/plataformas")}
+                >
+                  Cancelar
+                </Button>
                 <Button
                   variant="contained"
-                  sx={{ mt: 3 }}
-                  loading={isUpdating}
-                  loadingPosition="end"
                   onClick={handleClick}
+                  disabled={isUpdating}
                 >
-                  Aceptar
+                  {isUpdating ? "Guardando..." : "Guardar Cambios"}
                 </Button>
               </Grid>
             </Grid>
@@ -239,22 +181,13 @@ function EditarPlataforma() {
         </Grid>
       </Grid>
 
-      <Dialog
-        open={openDialog}
-        onClose={handleDialogClose}
-        disableEscapeKeyDown
-        aria-labelledby="result-dialog-title"
-      >
-        <DialogTitle id="result-dialog-title">
-          {dialogSeverity === "success" ? "Operación correcta" : "Error"}
-        </DialogTitle>
+      <Dialog open={openDialog} onClose={handleDialogClose}>
+        <DialogTitle>{dialogSeverity === "success" ? "¡Éxito!" : "Atención"}</DialogTitle>
         <DialogContent dividers>
-          <Alert severity={dialogSeverity} variant="filled">
-            {dialogMessage}
-          </Alert>
+          <Alert severity={dialogSeverity}>{dialogMessage}</Alert>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose}>OK</Button>
+          <Button onClick={handleDialogClose}>Cerrar</Button>
         </DialogActions>
       </Dialog>
     </>

@@ -3,16 +3,19 @@ const { logMensaje } = require("../utils/logger.js");
 const plataformaService = require("../services/plataformaService");
 
 class PlataformaController {
-  async getAllPlataformas(req, res) {
+async getAllPlataformas(req, res) {
     try {
-      const plataformas = await plataformaService.getAllPlataformas();
+      const { busqueda, fechaInicio, fechaFin } = req.query;
+
+      const plataformas = await plataformaService.getAllPlataformas(busqueda, fechaInicio, fechaFin);
+      
       return res.status(200).json({
         ok: true,
         datos: plataformas,
         mensaje: "Plataformas recuperadas correctamente",
       });
     } catch (err) {
-      logMensaje("Error en getAllPlataforma:", err);
+      console.error("Error en getAllPlataformas:", err);
       return res.status(500).json({
         ok: false,
         datos: null,
