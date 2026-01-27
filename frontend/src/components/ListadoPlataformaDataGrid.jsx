@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
@@ -13,8 +13,6 @@ function ListadoPlataformasDataGrid() {
   useEffect(() => {
     async function fetchData() {
       try {
-        // Pedimos un límite alto para tener todos los datos en el cliente
-        // y que el DataGrid pueda ordenar y filtrar todo.
         const respuesta = await api.get("/plataformas?limit=100");
         setRows(respuesta.datos || []);
       } catch (error) {
@@ -30,13 +28,12 @@ function ListadoPlataformasDataGrid() {
     
     { field: "nombre", headerName: "Nombre", flex: 1, minWidth: 150 },
     
-    // Columna URL con icono y enlace clickable
+ 
     { 
       field: "url_web", 
       headerName: "Sitio Web", 
       width: 200,
       renderCell: (params) => {
-        // Si no hay URL, no mostramos nada
         if (!params.value) return "-";
         
         return (
@@ -53,13 +50,11 @@ function ListadoPlataformasDataGrid() {
       }
     },
 
-    // Columna Booleana (Gratis vs Pago) visual
     { 
       field: "es_gratuita", 
       headerName: "Tipo", 
       width: 130,
       renderCell: (params) => {
-        // params.value será true (1) o false (0)
         return (
            <Chip 
              label={params.value ? "Gratis" : "De Pago"} 
@@ -71,7 +66,6 @@ function ListadoPlataformasDataGrid() {
       }
     },
 
-    // Columna Fecha
     { 
       field: "fecha_alta", 
       headerName: "Fecha Alta", 
@@ -92,14 +86,13 @@ function ListadoPlataformasDataGrid() {
       <DataGrid
         rows={rows}
         columns={columns}
-        getRowId={(row) => row.id_plataforma} // <--- ¡IMPORTANTE! La ID es id_plataforma
+        getRowId={(row) => row.id_plataforma}
         initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 5 },
           },
         }}
         pageSizeOptions={[5, 10, 25]}
-        slots={{ toolbar: GridToolbar }} // Barra de herramientas (Filtros, Exportar...)
         disableRowSelectionOnClick
       />
     </Paper>

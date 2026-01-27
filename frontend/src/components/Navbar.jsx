@@ -104,11 +104,9 @@ function Navbar({ toggleColorMode, mode }) {
               Cursos
             </Button>
           </Box>
-
           <IconButton sx={{ ml: 1 }} onClick={toggleColorMode} color="inherit">
               {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
-
           <Menu
             anchorEl={anclaMenuPlataformas}
             open={Boolean(anclaMenuPlataformas)}

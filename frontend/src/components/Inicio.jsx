@@ -1,7 +1,6 @@
 import React from 'react';
 import { Container, Typography, Button, Box, Grid } from '@mui/material';
 import { Link } from 'react-router';
-// Importamos los iconos específicos
 import AutoStoriesIcon from '@mui/icons-material/AutoStories'; 
 import SchoolIcon from '@mui/icons-material/School';           
 import TerminalIcon from '@mui/icons-material/Terminal';       

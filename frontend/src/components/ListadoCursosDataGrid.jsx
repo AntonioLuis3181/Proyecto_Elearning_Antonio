@@ -1,21 +1,19 @@
 import { useState, useEffect } from "react";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid"; // <--- La magia está aquí
+import { DataGrid } from '@mui/x-data-grid';
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import Avatar from "@mui/material/Avatar"; // Para la imagen pequeña
-import Chip from "@mui/material/Chip"; // Para el precio
+import Avatar from "@mui/material/Avatar"; 
+import Chip from "@mui/material/Chip"; 
 import api from "../api";
 
 function ListadoCursosDataGrid() {
   const [rows, setRows] = useState([]);
 
-  // 1. CARGAMOS TODOS LOS CURSOS (Sin paginación del servidor)
-  // Dejamos que el DataGrid se encargue de paginar visualmente
+
   useEffect(() => {
     async function fetchData() {
       try {
-        // Pedimos "todo" (limit grande o sin limit si tu backend lo permite)
-        // Si tu backend paginasí o sí, pide un limit alto, ej: limit=100
+
         const respuesta = await api.get("/cursos?limit=100"); 
         setRows(respuesta.datos || []);
       } catch (error) {
@@ -80,14 +78,13 @@ function ListadoCursosDataGrid() {
       <DataGrid
         rows={rows}
         columns={columns}
-        getRowId={(row) => row.id_curso} // Importante: decirle cuál es la ID única
+        getRowId={(row) => row.id_curso} 
         initialState={{
           pagination: {
-            paginationModel: { page: 0, pageSize: 5 }, // Empezar con 5 filas
+            paginationModel: { page: 0, pageSize: 5 }, 
           },
         }}
-        pageSizeOptions={[5, 10, 25]} // Opciones para que el usuario elija
-        slots={{ toolbar: GridToolbar }} // Añade barra de búsqueda y filtros gratis
+        pageSizeOptions={[5, 10, 25]} 
         disableRowSelectionOnClick
       />
     </Paper>
