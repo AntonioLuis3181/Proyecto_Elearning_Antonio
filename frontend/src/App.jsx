@@ -13,6 +13,7 @@ import EditarCurso from "./components/EditarCurso";
 import ListadoCursosDataGrid from "./components/ListadoCursosDataGrid";
 
 import Home from "./pages/Home";
+import ListadoPlataformaDataGrid from "./components/ListadoPlataformaDataGrid";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: "/plataformas/cards",
         element: <ListadoCardsPlataformas/>,
+      },
+      {
+        path: "/plataformas/datagrid",
+        element: <ListadoPlataformaDataGrid/>,
       },
       {
         path: "/plataformas/new",
@@ -46,23 +51,24 @@ const router = createBrowserRouter([
         element: <ListadoCardCursos/>
       },
       {
+        path: "/cursos/datagrid",
+        element: <ListadoCursosDataGrid/>
+      },
+      {
         path: "/cursos/new",
         element: <AltaCurso/>,
       },
       {
         path: "/cursos/edit/:id",
         element: <EditarCurso/>
-      },
-      {
-        path: "/cursos/datagrid",
-        element: <ListadoCursosDataGrid/>
       }
     ],
   },
 ]);
 
-function App() {
-  
+
+
+function App() {  
   return (
     <>
       <RouterProvider router={router}/>

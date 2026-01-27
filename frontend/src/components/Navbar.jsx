@@ -1,36 +1,18 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
+import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Button, MenuItem, Divider, ListSubheader } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
-import MenuItem from "@mui/material/MenuItem";
-import MovieTwoToneIcon from "@mui/icons-material/MovieTwoTone";
 import { Link } from "react-router";
-import Divider from "@mui/material/Divider";
-import ListSubheader from "@mui/material/ListSubheader";
+import Brightness4Icon from '@mui/icons-material/Brightness4'; // Luna
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 
-function Navbar() {
+function Navbar({ toggleColorMode, mode }) {
   const [anclaMenuPlataformas, setAnclaMenuPlataformas] = React.useState(null);
   const [anclaMenuCursos, setAnclaMenuCursos] = React.useState(null);
   const [anclaMenuXS, setAnclaMenuXS] = React.useState(null);
 
-  
-  const handleClickMenuPlataformas = (event) => {
-    setAnclaMenuPlataformas(event.currentTarget);
-  };
- 
-  const handleClickMenuCursos = (event) => {
-    setAnclaMenuCursos(event.currentTarget);
-  };
-
-  const handleClickMenuXS = (event) => {
-    setAnclaMenuXS(event.currentTarget);
-  };
+  const handleClickMenuPlataformas = (event) => setAnclaMenuPlataformas(event.currentTarget);
+  const handleClickMenuCursos = (event) => setAnclaMenuCursos(event.currentTarget);
+  const handleClickMenuXS = (event) => setAnclaMenuXS(event.currentTarget);
 
   const handleCloseNavMenu = () => {
     setAnclaMenuPlataformas(null);
@@ -38,172 +20,112 @@ function Navbar() {
     setAnclaMenuXS(null);
   };
 
-  const linkStyle = { color: "black", textDecoration: "none" };
+  const linkStyle = { color: "#1f2937", textDecoration: "none", width: '100%' };
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky" sx={{ backgroundColor: "white", color: "#1f2937", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* Menú para resolución xs  */}
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="menu plataformas db resolucion xs"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleClickMenuXS}
-              color="inherit"
-            >
+          
+          {/* 1. BOTÓN HAMBURGUESA */}
+          <Box sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}>
+            <IconButton size="large" onClick={handleClickMenuXS} color="inherit">
               <MenuIcon />
             </IconButton>
             <Menu
-              id="menu-appbar-xs"
               anchorEl={anclaMenuXS}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
               open={Boolean(anclaMenuXS)}
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: "block", md: "none" } }}
             >
-              <ListSubheader>Menú Plataformas</ListSubheader>
+              {/* Sección Plataformas en Móvil */}
+              <ListSubheader sx={{ fontWeight: 'bold', color: '#2563eb' }}>PLATAFORMAS</ListSubheader>
               <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/plataformas/new" style={linkStyle}>
-                  <Typography sx={{ textAlign: "center" }}>
-                    Alta de plataformas
-                  </Typography>
-                </Link>
+                <Link to="/plataformas/new" style={linkStyle}>Alta de plataformas</Link>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/plataformas" style={linkStyle}>
-                  <Typography sx={{ textAlign: "center" }}>
-                    Listado de plataformas
-                  </Typography>
-                </Link>
-              </MenuItem>
-              <Divider />
-              <ListSubheader>Menú Cursos</ListSubheader>
-              <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/cursos/new" style={linkStyle}>
-                  <Typography sx={{ textAlign: "center" }}>
-                    Alta de cursos
-                  </Typography>
-                </Link>
+                <Link to="/plataformas" style={linkStyle}>Listado de plataformas</Link>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/cursos" style={linkStyle}>
-                  <Typography sx={{ textAlign: "center" }}>
-                    Listado de cursos
-                  </Typography>
-                </Link>
+                <Link to="/plataformas/datagrid" style={linkStyle}>Listado de plataformas con DataGrid</Link>
               </MenuItem>
+
+              <IconButton sx={{ ml: 1 }} onClick={toggleColorMode} color="inherit">
+              {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+              </IconButton>
+              
+              <Divider sx={{ my: 1 }} />
+              
+              {/* Sección Cursos en Móvil */}
+              <ListSubheader sx={{ fontWeight: 'bold', color: '#2563eb' }}>CURSOS</ListSubheader>
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Link to="/cursos/new" style={linkStyle}>Alta de cursos</Link>
+              </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Link to="/cursos" style={linkStyle}>Listado de cursos</Link>
+              </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Link to="/cursos/datagrid" style={linkStyle}>Listado de cursos con DataGrid</Link>
+              </MenuItem>
+              <IconButton sx={{ ml: 1 }} onClick={toggleColorMode} color="inherit">
+              {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+              </IconButton>
             </Menu>
           </Box>
 
-          {/* Logo y nombre de la web */}
-          <MovieTwoToneIcon />
+          {/* 2. NOMBRE DE LA PÁGINA*/}
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="/"
+            component={Link}
+            to="/"
             sx={{
-              mx: 2,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
+              flexGrow: { xs: 1, md: 0 },
+              display: "flex",           
+              fontWeight: 800,
+              color: "#2563eb",
               textDecoration: "none",
+              mr: 4
             }}
           >
-            WEB E-LEARNING
+            WEB<Box component="span" sx={{ color: "#1f2937" }}>E-LEARNING</Box>
           </Typography>
 
-          {/* Menú para resolución md */}
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {/* Menú para plataformas en md */}
-            <Button
-              onClick={handleClickMenuPlataformas}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
+          {/* 3. MENÚ ESCRITORIO */}
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, gap: 1 }}>
+            <Button onClick={handleClickMenuPlataformas} sx={{ color: "#4b5563", textTransform: "none", fontWeight: 600 }}>
               Plataformas
             </Button>
-            <Menu
-              id="menu-plataformas"
-              anchorEl={anclaMenuPlataformas}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anclaMenuPlataformas)}
-              onClose={handleCloseNavMenu}
-              sx={{ display: { xs: "none", md: "flex" } }}
-            >
-              <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/plataformas/new" style={linkStyle}>
-                  <Typography sx={{ textAlign: "center" }}>
-                    Alta de plataformas
-                  </Typography>
-                </Link>
-              </MenuItem>
-              <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/plataformas" style={linkStyle}>
-                  <Typography sx={{ textAlign: "center" }}>
-                    Listado de plataformas
-                  </Typography>
-                </Link>
-              </MenuItem>
-            </Menu>
-            {/* Menú para cursos en md */}
-            <Button
-              onClick={handleClickMenuCursos}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
+            <Button onClick={handleClickMenuCursos} sx={{ color: "#4b5563", textTransform: "none", fontWeight: 600 }}>
               Cursos
             </Button>
-            <Menu
-              id="menu-cursos"
-              anchorEl={anclaMenuCursos}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anclaMenuCursos)}
-              onClose={handleCloseNavMenu}
-              sx={{ display: { xs: "none", md: "flex" } }}
-            >
-              <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/cursos/new" style={linkStyle}>
-                  <Typography sx={{ textAlign: "center" }}>
-                    Alta de cursos
-                  </Typography>
-                </Link>
-              </MenuItem>
-              <MenuItem onClick={handleCloseNavMenu}>
-                <Link to="/cursos" style={linkStyle}>
-                  <Typography sx={{ textAlign: "center" }}>
-                    Listado de cursos
-                  </Typography>
-                </Link>
-              </MenuItem>
-            </Menu>
+            <IconButton sx={{ ml: 1 }} onClick={toggleColorMode} color="inherit">
+              {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+            </IconButton>
           </Box>
+
+          <Menu
+            anchorEl={anclaMenuPlataformas}
+            open={Boolean(anclaMenuPlataformas)}
+            onClose={handleCloseNavMenu}
+            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          >
+            <MenuItem onClick={handleCloseNavMenu}><Link to="/plataformas/new" style={linkStyle}>Alta de plataformas</Link></MenuItem>
+            <MenuItem onClick={handleCloseNavMenu}><Link to="/plataformas" style={linkStyle}>Listado de plataformas</Link></MenuItem>
+            <MenuItem onClick={handleCloseNavMenu}><Link to="/plataformas/datagrid" style={linkStyle}>Listado de plataformas con DataGrid</Link></MenuItem>
+          </Menu>
+
+          <Menu
+            anchorEl={anclaMenuCursos}
+            open={Boolean(anclaMenuCursos)}
+            onClose={handleCloseNavMenu}
+            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          >
+            <MenuItem onClick={handleCloseNavMenu}><Link to="/cursos/new" style={linkStyle}>Alta de cursos</Link></MenuItem>
+            <MenuItem onClick={handleCloseNavMenu}><Link to="/cursos" style={linkStyle}>Listado de cursos</Link></MenuItem>
+            <MenuItem onClick={handleCloseNavMenu}><Link to="/cursos/datagrid" style={linkStyle}>Listado de cursos con DataGrid</Link></MenuItem>
+          </Menu>
+
         </Toolbar>
       </Container>
     </AppBar>

@@ -9,10 +9,13 @@ import api from "../api";
 function ListadoCursosDataGrid() {
   const [rows, setRows] = useState([]);
 
+  // 1. CARGAMOS TODOS LOS CURSOS (Sin paginación del servidor)
+  // Dejamos que el DataGrid se encargue de paginar visualmente
   useEffect(() => {
     async function fetchData() {
       try {
-        
+        // Pedimos "todo" (limit grande o sin limit si tu backend lo permite)
+        // Si tu backend paginasí o sí, pide un limit alto, ej: limit=100
         const respuesta = await api.get("/cursos?limit=100"); 
         setRows(respuesta.datos || []);
       } catch (error) {
@@ -41,7 +44,9 @@ function ListadoCursosDataGrid() {
       field: "plataforma", 
       headerName: "Plataforma", 
       width: 150,
-      valueGetter: (params) => params.row.plataforma?.nombre || "N/A"
+      valueGetter: (value, row) => {
+        return row?.plataforma?.nombre || "Sin plataforma";
+      }
     },
 
     { 
