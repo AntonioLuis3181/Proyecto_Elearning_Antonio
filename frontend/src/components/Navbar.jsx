@@ -49,6 +49,10 @@ function Navbar({ toggleColorMode, mode }) {
               <MenuItem onClick={handleCloseNavMenu}>
                 <Link to="/plataformas/datagrid" style={linkStyle}>Listado de plataformas con DataGrid</Link>
               </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Link to="/plataformas/cards" style={linkStyle}>Listado de plataformas con Cards</Link>
+              </MenuItem>
+
 
               <IconButton sx={{ ml: 1 }} onClick={toggleColorMode} color="inherit">
               {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
@@ -67,9 +71,9 @@ function Navbar({ toggleColorMode, mode }) {
               <MenuItem onClick={handleCloseNavMenu}>
                 <Link to="/cursos/datagrid" style={linkStyle}>Listado de cursos con DataGrid</Link>
               </MenuItem>
-              <IconButton sx={{ ml: 1 }} onClick={toggleColorMode} color="inherit">
-              {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-              </IconButton>
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Link to="/cursos/cards" style={linkStyle}>Listado de cursos con Cards</Link>
+              </MenuItem>
             </Menu>
           </Box>
 
@@ -99,10 +103,11 @@ function Navbar({ toggleColorMode, mode }) {
             <Button onClick={handleClickMenuCursos} sx={{ color: "#4b5563", textTransform: "none", fontWeight: 600 }}>
               Cursos
             </Button>
-            <IconButton sx={{ ml: 1 }} onClick={toggleColorMode} color="inherit">
-              {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-            </IconButton>
           </Box>
+
+          <IconButton sx={{ ml: 1 }} onClick={toggleColorMode} color="inherit">
+              {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+          </IconButton>
 
           <Menu
             anchorEl={anclaMenuPlataformas}
@@ -113,6 +118,7 @@ function Navbar({ toggleColorMode, mode }) {
             <MenuItem onClick={handleCloseNavMenu}><Link to="/plataformas/new" style={linkStyle}>Alta de plataformas</Link></MenuItem>
             <MenuItem onClick={handleCloseNavMenu}><Link to="/plataformas" style={linkStyle}>Listado de plataformas</Link></MenuItem>
             <MenuItem onClick={handleCloseNavMenu}><Link to="/plataformas/datagrid" style={linkStyle}>Listado de plataformas con DataGrid</Link></MenuItem>
+            <MenuItem onClick={handleCloseNavMenu}><Link to="/plataformas/cards" style={linkStyle}>Listado de plataformas con Cards</Link></MenuItem>
           </Menu>
 
           <Menu
@@ -124,6 +130,7 @@ function Navbar({ toggleColorMode, mode }) {
             <MenuItem onClick={handleCloseNavMenu}><Link to="/cursos/new" style={linkStyle}>Alta de cursos</Link></MenuItem>
             <MenuItem onClick={handleCloseNavMenu}><Link to="/cursos" style={linkStyle}>Listado de cursos</Link></MenuItem>
             <MenuItem onClick={handleCloseNavMenu}><Link to="/cursos/datagrid" style={linkStyle}>Listado de cursos con DataGrid</Link></MenuItem>
+            <MenuItem onClick={handleCloseNavMenu}><Link to="/cursos/cards" style={linkStyle}>Listado de cursos con Cards</Link></MenuItem>         
           </Menu>
 
         </Toolbar>
