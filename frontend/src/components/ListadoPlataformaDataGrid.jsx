@@ -8,8 +8,6 @@ import api from "../api";
 
 function ListadoPlataformasDataGrid() {
   const [rows, setRows] = useState([]);
-
-  // 1. CARGA DE DATOS
   useEffect(() => {
     async function fetchData() {
       try {

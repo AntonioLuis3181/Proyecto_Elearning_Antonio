@@ -13,6 +13,7 @@ import EditarCurso from "./components/EditarCurso";
 import ListadoCursosDataGrid from "./components/ListadoCursosDataGrid";
 
 import Home from "./pages/Home";
+import Footer from "./components/Footer";
 import ListadoPlataformaDataGrid from "./components/ListadoPlataformaDataGrid";
 
 const router = createBrowserRouter([
@@ -70,8 +71,11 @@ function App() {
   return (
     <>
       <RouterProvider router={router}/>
+      <Footer/>
     </>
+    
   )
 }
+
 
 export default App
