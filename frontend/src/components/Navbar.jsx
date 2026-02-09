@@ -4,6 +4,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router";
 import Brightness4Icon from '@mui/icons-material/Brightness4'; // Luna
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+/**
+ * Componente principal de listado.
+ * @component
+ */
 
 function Navbar({ toggleColorMode, mode }) {
   const [anclaMenuPlataformas, setAnclaMenuPlataformas] = React.useState(null);

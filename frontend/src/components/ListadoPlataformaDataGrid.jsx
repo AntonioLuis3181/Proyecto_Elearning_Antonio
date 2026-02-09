@@ -5,7 +5,10 @@ import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import PublicIcon from '@mui/icons-material/Public';
 import api from "../api";
-
+/**
+ * Componente principal de listado.
+ * @component
+ */
 function ListadoPlataformasDataGrid() {
   const [rows, setRows] = useState([]);
   useEffect(() => {

@@ -8,7 +8,10 @@ import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import api from "../api"; 
-
+/**
+ * Componente principal de listado.
+ * @component
+ */
 function AltaPlataforma() {
   const navigate = useNavigate();
 

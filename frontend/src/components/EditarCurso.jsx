@@ -10,7 +10,10 @@ import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import api from "../api";
-
+/**
+ * Componente principal de listado.
+ * @component
+ */
 function EditarCurso() {
   const navigate = useNavigate();
   const { id } = useParams();

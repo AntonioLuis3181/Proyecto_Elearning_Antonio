@@ -15,7 +15,10 @@ import Chip from '@mui/material/Chip';
 import PublicIcon from '@mui/icons-material/Public'; 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+/**
+ * Componente principal de listado.
+ * @component
+ */
 function ListadoCardPlataformas() {
   const [datos, setDatos] = useState([]);
   const [error, setError] = useState(null);

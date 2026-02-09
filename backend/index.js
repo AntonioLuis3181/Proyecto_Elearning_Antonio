@@ -5,6 +5,7 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const { logMensaje } = require("./utils/logger.js");
+const config = require("./config/config.js");
 
 // Rutas de la API
 const plataformaRoutes = require("./routes/plataformaRoutes");
@@ -54,4 +55,13 @@ const server = app.listen(port, () => {
 // ============================================
 // EXPORTAR
 // ============================================
+module.exports = app;
+
+// Iniciar el servidor solo si no estamos en modo de prueba
+if (process.env.NODE_ENV !== "test") {
+app.listen(config.port, () => {
+console.log(`Servidor escuchando en el puerto ${config.port}`);
+});
+}
+// Exportamos la aplicación para poder hacer pruebas
 module.exports = app;

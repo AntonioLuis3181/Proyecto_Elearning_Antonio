@@ -17,7 +17,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 
 import api from "../api";
-
+/**
+ * Componente principal de listado.
+ * @component
+ */
 function ListadoPlataformas() {
   const [datos, setDatos] = useState([]);
   

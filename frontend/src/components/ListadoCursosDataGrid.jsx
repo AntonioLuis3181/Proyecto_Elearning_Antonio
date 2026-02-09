@@ -5,7 +5,10 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar"; 
 import Chip from "@mui/material/Chip"; 
 import api from "../api";
-
+/**
+ * Componente principal de listado.
+ * @component
+ */
 function ListadoCursosDataGrid() {
   const [rows, setRows] = useState([]);
 

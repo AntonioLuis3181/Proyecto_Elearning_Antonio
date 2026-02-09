@@ -15,6 +15,11 @@ import ListadoCursosPDF from "./ListadoCursosPDF"; // Importamos el diseño que 
 
 const API_URL = "http://localhost:3000/api/cursos"; // Ajusta tu puerto si es necesario
 
+/**
+ * Componente principal de listado.
+ * @component
+ */
+
 function ListadoCursos() {
   const [cursos, setCursos] = useState([]);
   const [busqueda, setBusqueda] = useState("");

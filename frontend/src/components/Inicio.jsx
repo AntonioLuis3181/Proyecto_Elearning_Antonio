@@ -5,7 +5,10 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import SchoolIcon from '@mui/icons-material/School';           
 import TerminalIcon from '@mui/icons-material/Terminal';       
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'; 
-
+/**
+ * Componente principal de listado.
+ * @component
+ */
 function Inicio() {
   return (
     <Box>

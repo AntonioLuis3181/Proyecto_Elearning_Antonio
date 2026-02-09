@@ -17,7 +17,10 @@ import EuroIcon from '@mui/icons-material/Euro';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SchoolIcon from '@mui/icons-material/School';
-
+/**
+ * Componente principal de listado.
+ * @component
+ */
 function ListadoCardCursos() {
   const [datos, setDatos] = useState([]);
   const [error, setError] = useState(null);
