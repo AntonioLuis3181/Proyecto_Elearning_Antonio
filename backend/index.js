@@ -47,6 +47,11 @@ app.use("/api/cursos",cursoRoutes);
 // ============================================
 // SERVIDOR
 // ============================================
-app.listen(port, () => {
+const server = app.listen(port, () => {
   logMensaje(`Servidor escuchando en el puerto ${port}`);
 });
+
+// ============================================
+// EXPORTAR
+// ============================================
+module.exports = app;
