@@ -21,6 +21,7 @@ import api from "../api";
  * Componente principal de listado.
  * @component
  */
+
 function AltaCurso() {
   const navigate = useNavigate();
 
