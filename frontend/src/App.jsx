@@ -11,6 +11,7 @@ import ListadoCursos from "./components/ListadoCursos";
 import ListadoCardCursos from "./components/ListadoCardsCursos";
 import EditarCurso from "./components/EditarCurso";
 import ListadoCursosDataGrid from "./components/ListadoCursosDataGrid";
+import Informes from "./pages/Informes";
 
 import Home from "./pages/Home";
 import Footer from "./components/Footer";
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
       {
         path: "/cursos/edit/:id",
         element: <EditarCurso/>
+      },
+      {
+        path: "/informes",
+        element: <Informes/>
       }
     ],
   },

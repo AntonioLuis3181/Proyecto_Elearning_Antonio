@@ -1,170 +1,144 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid";
-import SearchIcon from '@mui/icons-material/Search';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from '@mui/material/IconButton';
+import { useState, useEffect, useRef } from "react";
+import { 
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, 
+  Typography, Container, TextField, Button, Box, Stack 
+} from "@mui/material";
+import PrintIcon from '@mui/icons-material/Print';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import DescriptionIcon from '@mui/icons-material/Description';
 
-import api from "../api";
+
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import ListadoCursosPDF from "./ListadoCursosPDF"; // Importamos el diseño que acabamos de crear
+
+const API_URL = "http://localhost:3000/api/cursos"; // Ajusta tu puerto si es necesario
 
 function ListadoCursos() {
-  const [datos, setDatos] = useState([]);
-   
-  const [busqueda, setBusqueda] = useState(""); 
-  const [fechaInicio, setFechaInicio] = useState("");
-  const [fechaFin, setFechaFin] = useState("");
+  const [cursos, setCursos] = useState([]);
+  const [busqueda, setBusqueda] = useState("");
+  const tableRef = useRef(null); // Referencia para la foto (html2canvas)
 
-  const getCursosFromApi = async () => {
-    try {
-      let queryParams = new URLSearchParams();
-      if (busqueda) queryParams.append("busqueda", busqueda);
-      if (fechaInicio) queryParams.append("fechaInicio", fechaInicio);
-      if (fechaFin) queryParams.append("fechaFin", fechaFin);
 
-      const url = `/cursos?${queryParams.toString()}`;
-      
-      const respuesta = await api.get(url);
-      return respuesta.datos || [];
-    } catch (error) {
-      console.error("Error recuperando cursos:", error);
-      return [];
-    }
-  };
-
-  useEffect(() => {
-    const cargaInicial = async () => {
-        const resultados = await getCursosFromApi();
-        setDatos(resultados);
-    };
-    cargaInicial();
-  }, []); 
-
-  const handleSearch = async () => {
-    const resultados = await getCursosFromApi();
-    setDatos(resultados);
-  };
-
-  async function handleDelete(id_curso) {
-    if (window.confirm("¿Seguro que quieres borrar este curso?")) {
+useEffect(() => {
+        const cargarCursos = async () => {
       try {
-        await api.delete("/cursos/" + id_curso);
-        setDatos((prevDatos) => prevDatos.filter((c) => c.id_curso !== id_curso));
+        const response = await fetch("http://localhost:3000/api/cursos");
+        const data = await response.json();
+        
+        setCursos(data.datos || data); 
       } catch (error) {
-        console.error("Error al borrar", error);
+        console.error("Error cargando cursos:", error);
       }
-    }
-  }
+    };
+
+    cargarCursos();
+
+  }, []);
+
+  // --- TÉCNICA 1: WINDOW.PRINT (Navegador) ---
+  const handleImprimirNavegador = () => {
+    window.print();
+  };
+
+  // --- TÉCNICA 2: JSPDF + HTML2CANVAS (Foto a PDF) ---
+  const handleImprimirImagenPDF = async () => {
+    const input = tableRef.current; // Capturamos la tabla
+    if (!input) return;
+
+    const canvas = await html2canvas(input);
+    const imgData = canvas.toDataURL('image/png');
+    
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save("listado_cursos_imagen.pdf");
+  };
+
+  // Filtrado simple en cliente (para que la tabla funcione al buscar)
+  const cursosFiltrados = cursos.filter(c => 
+    c.titulo.toLowerCase().includes(busqueda.toLowerCase())
+  );
 
   return (
-    <>
-      <Typography variant="h4" align="center" sx={{ mt: 3, mb: 3 }}>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Typography variant="h4" gutterBottom color="primary" fontWeight="bold">
         Listado de Cursos
       </Typography>
 
-      <Grid container spacing={2} sx={{ justifyContent: "center", mb: 3, alignItems: "center" }}>
-        
-        <Grid item>
-            <TextField 
-                label="Título..." 
-                variant="outlined" 
-                size="small"
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
-            />
-        </Grid>
+      {/* BARRA DE ACCIONES */}
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 3, justifyContent: 'space-between' }}>
+        <TextField
+          label="Buscar curso..."
+          variant="outlined"
+          size="small"
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          sx={{ width: { xs: '100%', sm: '300px' } }}
+        />
 
-        <Grid item>
-             <TextField
-                label="Desde"
-                type="date"
-                size="small"
-                InputLabelProps={{ shrink: true }}
-                value={fechaInicio}
-                onChange={(e) => setFechaInicio(e.target.value)}
-            />
-        </Grid>
+        {/* --- LOS 3 BOTONES DE IMPRESIÓN --- */}
+        {/* Usamos una clase 'no-print' para ocultarlos al imprimir por navegador */}
+        <Stack direction="row" spacing={1} className="no-print">
+          
+          {/* A. NAVEGADOR */}
+          <Button variant="outlined" startIcon={<PrintIcon />} onClick={handleImprimirNavegador}>
+            Imprimir
+          </Button>
 
-        <Grid item>
-             <TextField
-                label="Hasta"
-                type="date"
-                size="small"
-                InputLabelProps={{ shrink: true }}
-                value={fechaFin}
-                onChange={(e) => setFechaFin(e.target.value)}
-            />
-        </Grid>
+          {/* B. IMAGEN A PDF */}
+          <Button variant="outlined" color="secondary" startIcon={<PictureAsPdfIcon />} onClick={handleImprimirImagenPDF}>
+            PDF (Img)
+          </Button>
 
-        <Grid item>
-            <Button 
-                variant="contained" 
-                startIcon={<SearchIcon />} 
-                onClick={handleSearch}
-            >
-                Buscar
-            </Button>
-        </Grid>
-      </Grid>
+          {/* C. REACT-PDF (Nativo) */}
+          <PDFDownloadLink
+            document={<ListadoCursosPDF datos={cursosFiltrados} />}
+            fileName="informe_cursos.pdf"
+            style={{ textDecoration: 'none' }}
+          >
+            {({ loading }) => (
+              <Button variant="contained" color="primary" startIcon={<DescriptionIcon />}>
+                {loading ? 'Generando...' : 'Informe PDF'}
+              </Button>
+            )}
+          </PDFDownloadLink>
 
-      <TableContainer component={Paper} sx={{ mx: 2, width: 'auto', mb: 5 }}>
-        <Table sx={{ minWidth: 650 }} aria-label="tabla cursos">
-          <TableHead>
-            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+        </Stack>
+      </Stack>
+
+      {/* TABLA DE DATOS (Con ref para capturarla) */}
+      <TableContainer component={Paper} ref={tableRef} elevation={3}>
+        <Table>
+          <TableHead sx={{ bgcolor: '#eeeeee' }}>
+            <TableRow>
               <TableCell>ID</TableCell>
-              <TableCell>Logo</TableCell>
               <TableCell>Título</TableCell>
-              <TableCell>Plataforma</TableCell>
               <TableCell>Precio</TableCell>
-              <TableCell>Fecha Pub.</TableCell> 
-              <TableCell align="center">Acciones</TableCell>
+              <TableCell>Horas</TableCell>
+              {/* Ocultamos acciones al imprimir */}
+              <TableCell className="no-print">Acciones</TableCell> 
             </TableRow>
           </TableHead>
           <TableBody>
-            {datos.length === 0 ? (
-                <TableRow><TableCell colSpan={7} align="center">No hay datos</TableCell></TableRow>
-            ) : (
-                datos.map((row) => (
-                <TableRow key={row.id_curso}>
-                    <TableCell>{row.id_curso}</TableCell>
-                    <TableCell>
-                    {row.imagen_url && <img src={row.imagen_url} alt="Logo" width="40" style={{ borderRadius: '5px' }} />}
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }}>{row.titulo}</TableCell>
-                    <TableCell>{row.plataforma ? row.plataforma.nombre : "Sin plataforma"}</TableCell>
-                    <TableCell>{row.precio} €</TableCell>
-                     
-                    <TableCell>
-                        {row.fecha_publicacion 
-                            ? new Date(row.fecha_publicacion).toLocaleDateString() 
-                            : '-'}
-                    </TableCell>
-                     
-                    <TableCell align="center">
-                    <IconButton component={Link} to={`/cursos/edit/${row.id_curso}`} color="primary">
-                        <EditIcon />
-                    </IconButton>
-                    <IconButton onClick={() => handleDelete(row.id_curso)} color="error">
-                        <DeleteIcon />
-                    </IconButton>
-                    </TableCell>
-                </TableRow>
-                ))
-            )}
+            {cursosFiltrados.map((curso) => (
+              <TableRow key={curso.id_curso}>
+                <TableCell>{curso.id_curso}</TableCell>
+                <TableCell>{curso.titulo}</TableCell>
+                <TableCell>{curso.precio} €</TableCell>
+                <TableCell>{curso.horas} h</TableCell>
+                <TableCell className="no-print">
+                  <Button size="small" variant="contained" color="info">Ver</Button>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+    </Container>
   );
 }
 

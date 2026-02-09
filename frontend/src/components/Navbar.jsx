@@ -26,6 +26,7 @@ function Navbar({ toggleColorMode, mode }) {
     <AppBar position="sticky" sx={{ backgroundColor: "white", color: "#1f2937", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
+
           
           {/* 1. BOTÓN HAMBURGUESA */}
           <Box sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}>
@@ -52,11 +53,6 @@ function Navbar({ toggleColorMode, mode }) {
               <MenuItem onClick={handleCloseNavMenu}>
                 <Link to="/plataformas/cards" style={linkStyle}>Listado de plataformas con Cards</Link>
               </MenuItem>
-
-
-              <IconButton sx={{ ml: 1 }} onClick={toggleColorMode} color="inherit">
-              {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-              </IconButton>
               
               <Divider sx={{ my: 1 }} />
               
@@ -102,6 +98,9 @@ function Navbar({ toggleColorMode, mode }) {
             </Button>
             <Button onClick={handleClickMenuCursos} sx={{ color: "#4b5563", textTransform: "none", fontWeight: 600 }}>
               Cursos
+            </Button>
+            <Button color="inherit" component={Link} to="/informes">
+            Informes
             </Button>
           </Box>
           <IconButton sx={{ ml: 1 }} onClick={toggleColorMode} color="inherit">
