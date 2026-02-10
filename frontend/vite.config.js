@@ -10,4 +10,5 @@ export default defineConfig({
     // Activamos el plugin aquí
     nodePolyfills()
   ],
+  base:'./',
 })
