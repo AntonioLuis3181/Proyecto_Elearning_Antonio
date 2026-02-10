@@ -1,13 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-// Importamos el plugin
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
-    // Activamos el plugin aquí
     nodePolyfills()
   ],
   base:'./',
