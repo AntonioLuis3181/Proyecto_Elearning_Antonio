@@ -7,7 +7,7 @@ const { logMensaje } = require("../utils/logger.js");
 module.exports = {
   port: process.env.PORT || 3000,
   db: {
-    host: process.env.DB_HOST || "localhost",
+    host: process.env.DB_HOST || "db",
     user: process.env.DB_USER || "root",
     password: process.env.DB_PASSWORD || "test",
     name: process.env.DB_NAME || "elearning_db",

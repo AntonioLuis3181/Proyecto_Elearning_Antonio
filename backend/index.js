@@ -5,7 +5,6 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const { logMensaje } = require("./utils/logger.js");
-const config = require("./config/config.js");
 
 // Rutas de la API
 const plataformaRoutes = require("./routes/plataformaRoutes");
@@ -15,53 +14,38 @@ const cursoRoutes = require("./routes/cursoRoutes");
 // INICIALIZACIÓN
 // ============================================
 const app = express();
+// En Docker, el puerto interno suele ser 3000 por defecto
 const port = process.env.PORT || 3000;
 
 // ============================================
-// MIDDLEWARE - PARSEO
+// MIDDLEWARE
 // ============================================
 app.use(express.json());
-
-// ============================================
-// MIDDLEWARE - CORS - Cualquier origen
-// ============================================
-app.use(cors());
-
-// ============================================
-// MIDDLEWARE - ARCHIVOS ESTÁTICOS
-// ============================================
+app.use(cors()); // Permite conexiones desde cualquier origen (necesario para Docker)
 app.use(express.static(path.join(__dirname, "public")));
 
 // ============================================
-// RUTAS - API REST
+// RUTAS
 // ============================================
 app.use("/api/plataformas", plataformaRoutes);
-app.use("/api/cursos",cursoRoutes);
+app.use("/api/cursos", cursoRoutes);
 
-// ============================================
-// RUTAS - SPA (Catch-all)
-// ============================================
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "public", "index.html"));
-// });
-
-// ============================================
-// SERVIDOR
-// ============================================
-const server = app.listen(port, () => {
-  logMensaje(`Servidor escuchando en el puerto ${port}`);
+// Ruta base para comprobar que el backend respira
+app.get("/", (req, res) => {
+    res.send("Backend funcionando correctamente en Docker 🐳");
 });
 
 // ============================================
-// EXPORTAR
+// ARRANCAR SERVIDOR
 // ============================================
-module.exports = app;
-
-// Iniciar el servidor solo si no estamos en modo de prueba
+// Solo arrancamos si este archivo se ejecuta directamente (no en tests)
 if (process.env.NODE_ENV !== "test") {
-app.listen(config.port, () => {
-console.log(`Servidor escuchando en el puerto ${config.port}`);
-});
+    app.listen(port, () => {
+        // Usamos console.log por si logger falla al inicio
+        console.log(`🚀 Servidor Docker escuchando en el puerto ${port}`);
+        if (logMensaje) logMensaje(`Servidor iniciado en puerto ${port}`);
+    });
 }
-// Exportamos la aplicación para poder hacer pruebas
+
+// Exportamos para los tests
 module.exports = app;
