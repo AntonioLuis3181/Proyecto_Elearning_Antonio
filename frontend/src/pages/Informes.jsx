@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
-} from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Button, Container, Typography, Paper, Box } from "@mui/material";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 // Importamos la instancia de API que ya configuramos con la IP de AWS
