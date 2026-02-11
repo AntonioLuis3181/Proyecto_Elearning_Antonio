@@ -29,7 +29,7 @@ function ListadoCursos() {
 useEffect(() => {
         const cargarCursos = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/cursos");
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/cursos`);
         const data = await response.json();
         
         setCursos(data.datos || data); 
