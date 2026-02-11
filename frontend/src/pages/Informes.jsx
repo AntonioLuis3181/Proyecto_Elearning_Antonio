@@ -4,14 +4,14 @@ import {
 } from 'recharts';
 import { Button, Container, Typography, Paper, Box } from "@mui/material";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-
+import api from '../services/api';
 // Librerías para PDF
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 // Importa tu servicio para traer datos (ajusta la ruta si es necesario)
 // Si no tienes un servicio exportado, puedes hacer el fetch directo aquí.
-const API_URL = "http://localhost:3000/api/cursos"; 
+const response = await api.get('/cursos');
 
 function Informes() {
   const [datosGrafica, setDatosGrafica] = useState([]);
@@ -21,7 +21,7 @@ function Informes() {
 
   useEffect(() => {
     // 1. Cargar datos del backend
-    fetch(API_URL)
+    fetch(response)
       .then(res => res.json())
       .then(data => {
         // Asumiendo que tu API devuelve { datos: [...] }
