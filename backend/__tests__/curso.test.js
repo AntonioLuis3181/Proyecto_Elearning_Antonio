@@ -1,7 +1,7 @@
 const request = require('supertest');
 
 // Apuntamos a tu servidor encendido
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'http://98.95.205.77:3000/api';
 
 describe('TESTS DE LA API DE CURSOS', () => {
 
