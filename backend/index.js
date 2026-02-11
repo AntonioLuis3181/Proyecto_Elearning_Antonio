@@ -32,7 +32,7 @@ app.use("/api/cursos", cursoRoutes);
 
 // Ruta base para comprobar que el backend respira
 app.get("/", (req, res) => {
-    res.send("Backend funcionando correctamente en Docker 🐳");
+    res.send("Backend funcionando correctamente en Docker");
 });
 
 // ============================================
