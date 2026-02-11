@@ -104,5 +104,4 @@ function Informes() {
     </Container>
   );
 }
-
 export default Informes;
