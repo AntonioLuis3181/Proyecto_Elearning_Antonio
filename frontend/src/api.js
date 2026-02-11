@@ -1,12 +1,11 @@
 import axios from 'axios';
 
 /**
- * Instancia configurada de Axios para comunicación con el backend
- * Base URL: http://localhost:3000/api
- * Content-Type: application/json
+ * Usamos la variable de entorno VITE_API_URL definida en Railway.
+ * Si por alguna razón no la encuentra, usará la IP de AWS por defecto.
  */
 const api = axios.create({
-  baseURL: 'http://98.95.205.77:3000/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://98.95.205.77:3000/api',
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
@@ -18,11 +17,10 @@ const api = axios.create({
  */
 api.interceptors.response.use(
   (response) => {
-    // Si la respuesta es exitosa, retornamos los datos
+    // Si la respuesta es exitosa, retornamos los datos directamente
     return response.data;
   },
   (error) => {
-    // Manejo centralizado de errores
     let respuestaError = {
       ok: false,
       datos: null,
@@ -30,25 +28,14 @@ api.interceptors.response.use(
     };
 
     if (error.response) {
-      // El servidor respondió con un código de estado fuera del rango 2xx
       respuestaError.mensaje = error.response.data?.mensaje || 
-                         `Error: ${error.response.status} ${error.response.statusText}`;
-      
-      if (error.response.status === 404) {
-        console.warn(`Recurso no encontrado: ${error.config.url}`);
-      } else if (error.response.status === 400) {
-        console.warn(`Solicitud inválida: ${error.config.url}`);
-      } else if (error.response.status >= 500) {
-        console.error(`Error del servidor: ${error.config.url} - Status: ${error.response.status}`);
-      }
+                               `Error: ${error.response.status} ${error.response.statusText}`;
     } else if (error.request) {
-      // La solicitud fue realizada pero no hubo respuesta
-      respuestaError.mensaje = 'No hay respuesta del servidor. Verifica tu conexión.';
-      console.error('No hay respuesta del servidor:', error.request);
+      // Este es el error que ves cuando el navegador bloquea la conexión (Mixed Content)
+      respuestaError.mensaje = 'No hay respuesta del servidor. Verifica el permiso de "Contenido no seguro" en tu navegador.';
+      console.error('No hay respuesta del servidor (Posible bloqueo HTTPS/HTTP):', error.request);
     } else {
-      // Algo sucedió al preparar la solicitud
       respuestaError.mensaje = error.message || 'Error al realizar la solicitud';
-      console.error('Error en la solicitud:', error.message);
     }
 
     return Promise.reject(respuestaError);
