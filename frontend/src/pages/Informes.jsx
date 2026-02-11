@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
+} from 'recharts';
 import { Button, Container, Typography, Paper, Box } from "@mui/material";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-// Importamos la instancia de API que ya configuramos con la IP de AWS
+// Importamos la instancia de API (que apunta a AWS)
 import api from '../services/api';
 // Librerías para PDF
 import jsPDF from 'jspdf';
@@ -16,20 +18,18 @@ function Informes() {
 
   useEffect(() => {
     // 1. Cargar datos del backend USANDO AXIOS (api.js)
-    // Esto usará automáticamente la IP de AWS: http://98.95.205.77:3000/api/cursos
     api.get('/cursos')
       .then(response => {
-        // En Axios, los datos reales están en response.data
-        const data = response; 
+        // CORRECCIÓN IMPORTANTE: En Axios, los datos están en response.data
+        const data = response.data; 
         
-        // A veces tu backend devuelve un array directo, o un objeto { ok: true, datos: [...] }
-        // Ajustamos para que funcione en ambos casos:
+        // Comprobamos si el backend devuelve un array directo o un objeto { datos: [...] }
         const cursos = Array.isArray(data) ? data : (data.datos || []);
         
         // Formateamos los datos para Recharts
         const dataParaGrafica = cursos.map(curso => ({
           nombre: curso.titulo ? (curso.titulo.substring(0, 15) + "...") : "Sin título",
-          horas: Number(curso.horas), // Aseguramos que sea número
+          horas: Number(curso.horas), // Aseguramos que sea número para que la gráfica pinte
           precio: curso.precio
         }));
         
