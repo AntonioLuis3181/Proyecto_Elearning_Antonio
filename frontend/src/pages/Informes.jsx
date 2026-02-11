@@ -4,14 +4,11 @@ import {
 } from 'recharts';
 import { Button, Container, Typography, Paper, Box } from "@mui/material";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+// Importamos la instancia de API que ya configuramos con la IP de AWS
 import api from '../services/api';
 // Librerías para PDF
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-
-// Importa tu servicio para traer datos (ajusta la ruta si es necesario)
-// Si no tienes un servicio exportado, puedes hacer el fetch directo aquí.
-const response = await api.get('/cursos');
 
 function Informes() {
   const [datosGrafica, setDatosGrafica] = useState([]);
@@ -20,25 +17,27 @@ function Informes() {
   const chartRef = useRef(null);
 
   useEffect(() => {
-    // 1. Cargar datos del backend
-    fetch(response)
-      .then(res => res.json())
-      .then(data => {
-        // Asumiendo que tu API devuelve { datos: [...] }
-        // Si devuelve un array directo, usa 'data'
-        const cursos = data.datos || data; 
+    // 1. Cargar datos del backend USANDO AXIOS (api.js)
+    // Esto usará automáticamente la IP de AWS: http://98.95.205.77:3000/api/cursos
+    api.get('/cursos')
+      .then(response => {
+        // En Axios, los datos reales están en response.data
+        const data = response; 
+        
+        // A veces tu backend devuelve un array directo, o un objeto { ok: true, datos: [...] }
+        // Ajustamos para que funcione en ambos casos:
+        const cursos = Array.isArray(data) ? data : (data.datos || []);
         
         // Formateamos los datos para Recharts
-        // Necesitamos un array de objetos con claves simples
         const dataParaGrafica = cursos.map(curso => ({
-          nombre: curso.titulo.substring(0, 15) + "...", // Acortamos el nombre
-          horas: curso.horas, // Eje Y
-          precio: curso.precio // Otro dato para el tooltip
+          nombre: curso.titulo ? (curso.titulo.substring(0, 15) + "...") : "Sin título",
+          horas: Number(curso.horas), // Aseguramos que sea número
+          precio: curso.precio
         }));
         
         setDatosGrafica(dataParaGrafica);
       })
-      .catch(err => console.error("Error cargando gráficas:", err));
+      .catch(err => console.error("Error cargando gráficas desde AWS:", err));
   }, []);
 
   // --- FUNCIÓN: EXPORTAR GRÁFICA A PDF (Imagen) ---
@@ -51,11 +50,10 @@ function Informes() {
     const imgData = canvas.toDataURL('image/png');
 
     // 2. Crear PDF
-    const pdf = new jsPDF('landscape'); // Horizontal para que quepa mejor
+    const pdf = new jsPDF('landscape');
     pdf.text("Reporte de Duración de Cursos", 20, 20);
     
-    // 3. Añadir imagen al PDF (x, y, ancho, alto)
-    // Ajustamos el tamaño proporcionalmente
+    // 3. Añadir imagen al PDF
     const imgProps = pdf.getImageProperties(imgData);
     const pdfWidth = pdf.internal.pageSize.getWidth() - 40;
     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
@@ -91,23 +89,12 @@ function Informes() {
                 data={datosGrafica}
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
               >
-                {/* a. Grid */}
                 <CartesianGrid strokeDasharray="3 3" />
-                
-                {/* b. Ejes */}
                 <XAxis dataKey="nombre" />
                 <YAxis label={{ value: 'Horas', angle: -90, position: 'insideLeft' }} />
-                
-                {/* c. Tooltip (Información sobreimpresa) */}
                 <Tooltip />
-                
-                {/* d. Leyenda */}
                 <Legend />
-                
-                {/* e. Serie de datos */}
                 <Bar dataKey="horas" fill="#8884d8" name="Duración (Horas)" />
-                {/* Puedes añadir otra barra si quieres comparar precio */}
-                {/* <Bar dataKey="precio" fill="#82ca9d" name="Precio (€)" /> */}
               </BarChart>
             </ResponsiveContainer>
             
