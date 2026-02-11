@@ -5,7 +5,7 @@ import {
 import { Button, Container, Typography, Paper, Box } from "@mui/material";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 // Importamos la instancia de API (que apunta a AWS)
-import api from '../services/api';
+import api from '../api';
 // Librerías para PDF
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
